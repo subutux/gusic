@@ -9,5 +9,3 @@ def Build(connector):
 		b.add_from_file(whoami + '.glade')
 		b.connect_signals(connector)
 		return b
-
-
