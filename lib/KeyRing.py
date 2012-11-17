@@ -15,7 +15,7 @@
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 
-from gi.repository import gnomeKeyring as gk
+from gi.repository import GnomeKeyring as gk
 class keyring(object):
 	def __init__(self):
 		self.loginDetails = False
@@ -27,8 +27,8 @@ class keyring(object):
 
 			else:
 				gk.create_sync("GoogleMusic","GoogleMusic")
-	def haveLoginDetials():
-		if !self.loginDetails:
+	def haveLoginDetails():
+		if self.loginDetails == False:
 			return False
 		else:
 			return True
