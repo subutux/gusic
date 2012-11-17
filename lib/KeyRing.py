@@ -23,7 +23,7 @@ class keyring(object):
 			if "GoogleMusic" in gk.list_keyring_names_sync():
 				self.keyring = gk.list_item_ids_sync("GoogleMusic")[1]
 				if "loginDetails" in self.keyring:
-					self.loginDetails = self.get_first_key("GoogleMusic")
+					self.loginDetails = self._get_first_key("GoogleMusic")
 
 			else:
 				gk.create_sync("GoogleMusic","GoogleMusic")
@@ -51,4 +51,4 @@ class keyring(object):
 		'useWith':'GoogleMusic'
 		}
 		key = gk.item_create_sync('GoogleMusic',gk.ITEM_GENERIC_SECRET,user,atts,password, True)
-		
+
