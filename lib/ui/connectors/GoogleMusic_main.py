@@ -15,10 +15,9 @@
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import Gtk
-class Signals(object):
+from lib.core.signals import Signals
+class Signals(Signals):
 	def on_toolbutton_play_clicked(self,widget):
 		print "on_toolbutton_play_clicked"
 	def on_button_exit_clicked(self,widget):
 		self.destroy(None)
-	def destroy(self,window):
-		Gtk.main_quit()

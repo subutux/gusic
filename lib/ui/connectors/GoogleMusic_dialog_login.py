@@ -15,11 +15,34 @@
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import Gtk
-class Signals(object):
+from lib.core.signals import Signals
+import threading
+class Signals(Signals):
 	def on_button_exit_clicked(self,widget):
 		print "on_button_exit_clicked"
 		self.destroy(None)
 	def on_button_login_clicked(self,widget):
 		print "on_button_login_clicked"
-	def destroy(self,widget):
-		Gtk.main_quit()
+		entry_username = self.mSelf.loginBuilder.get_object("entry_google_account_user")
+		entry_password = self.mSelf.loginBuilder.get_object("entry_google_account_password")
+		label_status = self.mSelf.loginBuilder.get_object("label_login_status")
+		img_ok_user = self.mSelf.loginBuilder.get_object("image_username_ok")
+		img_ok_pass = self.mSelf.loginBuilder.get_object("image_password_ok")
+		spinner_login = self.mSelf.loginBuilder.get_object("spinner_login")
+		doLogin = threading.Thread(target=self.mSelf.api.login,args=(entry_username.get_text(),entry_password.get_text()))
+		label_status.set_text("Logging in ...")
+		spinner_login.set_visible(True)
+		spinner_login.start()
+		doLogin.start()
+		while doLogin.isAlive():
+			while Gtk.events_pending():
+				Gtk.main_iteration()
+		if self.mSelf.api.is_authenticated():
+			label_status.set_text("Logged in!")
+			img_ok_user.set_visible(True)
+			img_ok_pass.set_visible(True)
+			spinner_login.stop()
+			spinner_login.set_visible(False)
+		else:
+			label_status.set_text("Unable to login.")
+

@@ -16,18 +16,22 @@
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
-class Main_connectors(object):
+from gmusicapi.api import Api as gMusicApi
+Gdk.threads_init()
+class Gusic(object):
 	def __init__(self):
-		self.mainBuilder = GoogleMusic_main.Build(None)
+		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
 		self.keyring = keyring()
+		self.api = gMusicApi()
 		if self.keyring.haveLoginDetails():
 			self.main.show_all()
 		else:
-			self.loginBuilder = GoogleMusic_dialog_login.Build(None)
+			self.loginBuilder = GoogleMusic_dialog_login.Build(self,None)
 			self.loginDialog = self.loginBuilder.get_object('window_login')
 			self.image_logo = self.loginBuilder.get_object('image_logo')
 			self.image_logo.set_from_file('imgs/Gusic_logo.svg')
@@ -35,9 +39,10 @@ class Main_connectors(object):
 
 class main():
 	def __init__(self):
-		app = Main_connectors()
-
+		app = Gusic()
+		Gdk.threads_enter()
 		Gtk.main()
+		Gdk.threads_leave()
 
 
 main()

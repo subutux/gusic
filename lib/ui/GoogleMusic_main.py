@@ -18,7 +18,7 @@
 from gi.repository import Gtk
 import os.path
 import importlib
-def Build(connector=None):
+def Build(mainClass=None,connector=None):
 	whereami =  os.path.dirname(os.path.realpath(__file__))
 	whoami = os.path.splitext(__file__)[0]
 	if os.path.exists(whoami + '.glade'):
@@ -27,7 +27,10 @@ def Build(connector=None):
 		if connector == None:
 			
 			s = importlib.import_module('lib.ui.connectors.' + os.path.basename(whoami))
-			b.connect_signals(s.Signals())
+			if mainClass != None:
+				b.connect_signals(s.Signals(mainClass))
+			else:
+				b.connect_signals(s.Signals())
 
 		else:
 			b.connect_signals(connector)

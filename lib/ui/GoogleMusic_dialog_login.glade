@@ -4,6 +4,12 @@
   <object class="GtkAction" id="action1"/>
   <object class="GtkWindow" id="window_login">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Login</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-always</property>
+    <property name="icon">../../imgs/Gusic_logo-16.png</property>
+    <property name="type_hint">dialog</property>
     <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
@@ -123,8 +129,8 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                 </child>
                 <child>
                   <object class="GtkImage" id="image_username_ok">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
                     <property name="stock">gtk-yes</property>
                   </object>
                   <packing>
@@ -136,8 +142,8 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                 </child>
                 <child>
                   <object class="GtkImage" id="image_password_ok">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
                     <property name="stock">gtk-yes</property>
                   </object>
                   <packing>
@@ -181,6 +187,7 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
             <property name="can_focus">False</property>
             <property name="margin_top">20</property>
             <property name="margin_bottom">20</property>
+            <property name="homogeneous">True</property>
             <property name="layout_style">spread</property>
             <child>
               <object class="GtkButton" id="button_exit">
@@ -189,18 +196,43 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_button_exit_clicked" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label_login_status">
+              <object class="GtkBox" id="box4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkSpinner" id="spinner_login">
+                    <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
+                    <property name="active">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_login_status">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -215,10 +247,12 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_button_login_clicked" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>
