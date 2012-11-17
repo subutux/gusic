@@ -18,11 +18,17 @@
 from gi.repository import Gtk
 import os.path
 
-def Build(connector):
+def Build(connector=None):
 	whereami =  os.path.dirname(os.path.realpath(__file__))
 	whoami = os.path.splitext(__file__)[0]
 	if os.path.exists(whoami + '.glade'):
 		b =  Gtk.Builder()
 		b.add_from_file(whoami + '.glade')
-		b.connect_signals(connector)
+		if connector == None:
+			
+			s = importlib.import_module('lib.ui.connectors.' + os.path.basename(whoami))
+			b.connect_signals(s.Signals())
+
+		else:
+			b.connect_signals(connector)
 		return b
