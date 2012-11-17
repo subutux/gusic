@@ -17,15 +17,20 @@
 
 from gi.repository import Gtk
 from lib.ui import GoogleMusic_main
+from lib.ui import GoogleMusic_dialog_login
+from lib.KeyRing import keyring
 class Main_connectors(object):
 	def __init__(self):
-		self.Builder = GoogleMusic_main.Build(self)
-		self.main = self.Builder.get_object('window1')
-		self.main.show_all()
-	def on_toolbutton_play_clicked(self,widget):
-		print "on_toolbutton_play_clicked"
-	def destroy(self,window):
-		Gtk.main_quit()
+		self.mainBuilder = GoogleMusic_main.Build(None)
+		self.main = self.mainBuilder.get_object('window1')
+		self.keyring = keyring()
+		if self.keyring.haveLoginDetails():
+			self.main.show_all()
+		else:
+			self.loginBuilder = GoogleMusic_dialog_login.Build(None)
+			self.loginDialog = self.loginBuilder.get_object('window_login')
+			self.loginDialog.show_all()
+
 class main():
 	def __init__(self):
 		app = Main_connectors()

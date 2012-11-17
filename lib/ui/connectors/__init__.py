@@ -14,22 +14,3 @@
 # along with google-music.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
-
-from gi.repository import Gtk
-import os.path
-import importlib
-
-def Build(connector=None):
-	whereami =  os.path.dirname(os.path.realpath(__file__))
-	whoami = os.path.splitext(__file__)[0]
-	if os.path.exists(whoami + '.glade'):
-		b =  Gtk.Builder()
-		b.add_from_file(whoami + '.glade')
-		if connector == None:
-			
-			s = importlib.import_module('lib.ui.connectors.' + os.path.basename(whoami))
-			b.connect_signals(s.Signals())
-
-		else:
-			b.connect_signals(connector)
-		return b
