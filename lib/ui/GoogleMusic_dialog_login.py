@@ -17,7 +17,6 @@
 
 from gi.repository import Gtk
 import os.path
-import importlib
 
 def Build(connector=None):
 	whereami =  os.path.dirname(os.path.realpath(__file__))
