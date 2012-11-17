@@ -29,6 +29,8 @@ class Main_connectors(object):
 		else:
 			self.loginBuilder = GoogleMusic_dialog_login.Build(None)
 			self.loginDialog = self.loginBuilder.get_object('window_login')
+			self.image_logo = self.loginBuilder.get_object('image_logo')
+			self.image_logo.set_from_file('imgs/Gusic_logo.svg')
 			self.loginDialog.show_all()
 
 class main():
