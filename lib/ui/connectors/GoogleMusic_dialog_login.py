@@ -43,6 +43,8 @@ class Signals(Signals):
 			img_ok_pass.set_visible(True)
 			spinner_login.stop()
 			spinner_login.set_visible(False)
+			self.mSelf.loggedIn = True
+			self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
 		else:
 			label_status.set_text("Unable to login.")
 

@@ -21,6 +21,8 @@ from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
 from gmusicapi.api import Api as gMusicApi
+import threading
+import time
 Gdk.threads_init()
 class Gusic(object):
 	def __init__(self):
@@ -29,7 +31,7 @@ class Gusic(object):
 		self.keyring = keyring()
 		self.api = gMusicApi()
 		if self.keyring.haveLoginDetails():
-			self.main.show_all()
+			self.startMain()
 		else:
 			self.loginBuilder = GoogleMusic_dialog_login.Build(self,None)
 			self.loginDialog = self.loginBuilder.get_object('window_login')
@@ -37,6 +39,12 @@ class Gusic(object):
 			self.image_logo.set_from_file('imgs/Gusic_logo.svg')
 			self.loginDialog.show_all()
 
+	def startMain(self):
+		self.main.show_all()
+	def isLoggedIn(self):
+		while self.loggedIn == False:
+			time.sleep(2)
+		return True
 class main():
 	def __init__(self):
 		app = Gusic()
