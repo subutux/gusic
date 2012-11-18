@@ -20,10 +20,12 @@ class keyring(object):
 	def __init__(self):
 		self.loginDetails = False
 		if gk.is_available() is True:
-			if "GoogleMusic" in gk.list_keyring_names_sync():
+			if "GoogleMusic" in gk.list_keyring_names_sync()[1]:
+				print "have keyring"
 				self.keyring = gk.list_item_ids_sync("GoogleMusic")[1]
-				if "loginDetails" in self.keyring:
-					self.loginDetails = self._get_first_key("GoogleMusic")
+
+				self.loginDetails = self._get_first_key("GoogleMusic")
+				print self.loginDetails
 
 			else:
 				gk.create_sync("GoogleMusic","GoogleMusic")
@@ -42,13 +44,15 @@ class keyring(object):
 		return False
 	def _get_first_key(self,keyring):
 		item_keys = gk.list_item_ids_sync(keyring)
+		print "keys:",item_keys
 		item_info = gk.item_get_info_sync(keyring,item_keys[1][0])
-		return (item_info.get_display_name(),item_info.get_secret())
+		print item_info
+		return (item_info[1].get_display_name(),item_info[1].get_secret())
 	def getLoginDetails():
 		return self.loginDetails
 	def saveLoginDetails(self,user,password):
-		atts = {
-		'useWith':'GoogleMusic'
-		}
-		key = gk.item_create_sync('GoogleMusic',gk.ITEM_GENERIC_SECRET,user,atts,password, True)
-
+		atts = gk.Attribute.list_new()
+		gk.Attribute.list_append_string(atts,'useWith','GoogleMusic')
+		key = gk.item_create_sync('GoogleMusic',0,user,atts,password, True)
+	def getLoginDetails():
+		return self.loginDetails()
