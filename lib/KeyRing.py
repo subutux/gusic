@@ -25,7 +25,7 @@ class keyring(object):
 				self.keyring = gk.list_item_ids_sync("GoogleMusic")[1]
 
 				self.loginDetails = self._get_first_key("GoogleMusic")
-				print self.loginDetails
+				
 
 			else:
 				gk.create_sync("GoogleMusic","GoogleMusic")
@@ -45,9 +45,12 @@ class keyring(object):
 	def _get_first_key(self,keyring):
 		item_keys = gk.list_item_ids_sync(keyring)
 		print "keys:",item_keys
-		item_info = gk.item_get_info_sync(keyring,item_keys[1][0])
-		print item_info
-		return (item_info[1].get_display_name(),item_info[1].get_secret())
+		if len(item_keys[1]) > 0:
+			item_info = gk.item_get_info_sync(keyring,item_keys[1][0])
+			return (item_info[1].get_display_name(),item_info[1].get_secret())
+		else:
+			return False
+		
 	def getLoginDetails():
 		return self.loginDetails
 	def saveLoginDetails(self,user,password):
