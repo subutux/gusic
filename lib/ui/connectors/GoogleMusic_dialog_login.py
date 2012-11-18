@@ -32,19 +32,24 @@ class Signals(Signals):
 		doLogin = threading.Thread(target=self.mSelf.api.login,args=(entry_username.get_text(),entry_password.get_text()))
 		label_status.set_text("Logging in ...")
 		spinner_login.set_visible(True)
-		spinner_login.start()
 		doLogin.start()
 		while doLogin.isAlive():
 			while Gtk.events_pending():
 				Gtk.main_iteration()
 		if self.mSelf.api.is_authenticated():
-			label_status.set_text("Logged in!")
 			img_ok_user.set_visible(True)
 			img_ok_pass.set_visible(True)
-			spinner_login.stop()
+			label_status.set_text("Downloading music information ...")
+			fetchSongs = threading.Thread(target=self.mSelf.fetchMusicLibrary())
+			fetchSongs.start()
+			while fetchSongs.isAlive():
+				while Gtk.events_pending():
+					Gtk.main_iteration()
+			#print self.mSelf.Library['songs']
 			spinner_login.set_visible(False)
 			self.mSelf.loggedIn = True
 			self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
+			self.mSelf.startGusic(True)
 		else:
 			label_status.set_text("Unable to login.")
 
