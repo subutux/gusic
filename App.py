@@ -21,6 +21,7 @@ from gi.repository import GLib
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
+from lib.core.gstreamer import GStreamer
 from gmusicapi.api import Api as gMusicApi
 import threading
 import time
@@ -31,6 +32,9 @@ class Gusic(object):
 		self.keyring = keyring()
 		self.api = gMusicApi()
 		self.Library = {}
+		self.gst = GStreamer()
+		self.gst.set_playback(None)
+
 		if self.keyring.haveLoginDetails():
 			self.startGusic()
 		else:

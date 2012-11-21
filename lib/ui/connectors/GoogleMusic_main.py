@@ -21,3 +21,10 @@ class Signals(Signals):
 		print "on_toolbutton_play_clicked"
 	def on_button_exit_clicked(self,widget):
 		self.destroy(None)
+	def on_treeview_main_song_view_row_activated(self,one,two,three) :
+		tree_selection = self.mSelf.treeview_main_song_view.get_selection()
+		(model, pathlist) = tree_selection.get_selected_rows()
+		for path in pathlist :
+			tree_iter = model.get_iter(path)
+			value = model.get_value(tree_iter,10)
+			print value
