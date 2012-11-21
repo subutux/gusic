@@ -7,7 +7,7 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-new</property>
   </object>
-  <object class="GtkListStore" id="liststore_songs">
+  <object class="GtkListStore" id="liststore_all_songs">
     <columns>
       <!-- column-name type -->
       <column type="gint"/>
@@ -389,10 +389,10 @@
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkTreeView" id="treeview_all_songs">
+                  <object class="GtkTreeView" id="treeview_main_song_view">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="model">liststore_songs</property>
+                    <property name="model">liststore_all_songs</property>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection" id="treeview-selection1"/>
                     </child>
@@ -402,6 +402,12 @@
                         <property name="title" translatable="yes">Track</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
+                        <child>
+                          <object class="GtkCellRendererSpinner" id="cellrenderertext1"/>
+                          <attributes>
+                            <attribute name="visible">7</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                     <child>
@@ -412,6 +418,12 @@
                         <property name="clickable">True</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                          <attributes>
+                            <attribute name="text">1</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                     <child>
@@ -422,11 +434,23 @@
                         <property name="clickable">True</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderertext3"/>
+                          <attributes>
+                            <attribute name="text">4</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn_album">
                         <property name="title" translatable="yes">Album</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderertext4"/>
+                          <attributes>
+                            <attribute name="text">4</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                   </object>

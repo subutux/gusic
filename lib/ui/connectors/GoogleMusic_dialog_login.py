@@ -16,11 +16,14 @@
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import Gtk
 from lib.core.signals import Signals
+import time
 import threading
 class Signals(Signals):
 	def on_button_exit_clicked(self,widget):
 		print "on_button_exit_clicked"
 		self.destroy(None)
+	def on_entry_google_account_password_activate(self,widget):
+		self.on_button_login_clicked(widget)
 	def on_button_login_clicked(self,widget):
 		print "on_button_login_clicked"
 		entry_username = self.mSelf.loginBuilder.get_object("entry_google_account_user")
@@ -36,11 +39,13 @@ class Signals(Signals):
 		while doLogin.isAlive():
 			while Gtk.events_pending():
 				Gtk.main_iteration()
+		time.sleep(0.1)
 		if self.mSelf.api.is_authenticated():
 			img_ok_user.set_visible(True)
 			img_ok_pass.set_visible(True)
 			label_status.set_text("Downloading music information ...")
-			fetchSongs = threading.Thread(target=self.mSelf.fetchMusicLibrary())
+			fetchSongs = threading.Thread(target=self.mSelf.fetchMusicLibrary)
+
 			fetchSongs.start()
 			while fetchSongs.isAlive():
 				while Gtk.events_pending():

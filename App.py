@@ -49,8 +49,27 @@ class Gusic(object):
 			time.sleep(0.5)
 		return True
 	def fetchMusicLibrary(self):
+		print "fetchMusicLibrary"
 		self.Library['songs'] = self.api.get_all_songs()
-
+		self.liststore_all_songs = self.mainBuilder.get_object('liststore_all_songs')
+		self.treeview_main_song_view = self.mainBuilder.get_object('treeview_main_song_view')
+		#self.treeview_main_song_view.freeze_child_notify()
+		#self.treeview_main_song_view.set_model(self.liststore_all_songs)
+		songAdd = 0
+		for song in self.Library['songs']:
+			if not 'albumArtUrl' in song:
+				song['albumArtUrl'] = 'null'
+			if not 'disc' in song:
+				song['disc'] = 0
+			if not 'track' in song:
+				song['track'] = 0
+			if not 'totalTracks' in song:
+				song['totalTracks'] = 0
+			print "adding %s" % song['title']
+			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['albumArtist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl']])
+		#print "setting model"
+		self.treeview_main_song_view.set_model(self.liststore_all_songs)
+		#self.treeview_main_song_view.thaw_child_notify()
 class main():
 	def __init__(self):
 		GLib.threads_init()
