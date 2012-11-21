@@ -8,7 +8,7 @@
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-always</property>
-    <property name="icon">../../imgs/Gusic_logo-16.png</property>
+    <property name="icon">../../imgs/Gusic_logo-256.png</property>
     <property name="type_hint">dialog</property>
     <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
@@ -36,6 +36,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
+                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="label_welcome_text">
                     <property name="width_request">200</property>
@@ -49,8 +50,8 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                     <property name="wrap">True</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -58,6 +59,7 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                   <object class="GtkBox" id="box6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="spacing">5</property>
                     <child>
                       <object class="GtkSpinner" id="spinner_login">
                         <property name="can_focus">False</property>
@@ -165,6 +167,7 @@ Please login with your &lt;b&gt;Google Account&lt;/b&gt;, so I can fetch your mu
                     <property name="visibility">False</property>
                     <property name="invisible_char">●</property>
                     <property name="invisible_char_set">True</property>
+                    <signal name="activate" handler="on_entry_google_account_password_activate" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
