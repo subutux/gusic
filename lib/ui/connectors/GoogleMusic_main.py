@@ -26,5 +26,7 @@ class Signals(Signals):
 		(model, pathlist) = tree_selection.get_selected_rows()
 		for path in pathlist :
 			tree_iter = model.get_iter(path)
-			value = model.get_value(tree_iter,10)
-			print value
+			songId = model.get_value(tree_iter,5)
+			songUrl = self.mSelf.api.get_stream_url(songId)
+			print "url: %s" %songUrl
+			self.mSelf.gst.playpause(songUrl)

@@ -33,7 +33,7 @@ class Gusic(object):
 		self.api = gMusicApi()
 		self.Library = {}
 		self.gst = GStreamer()
-		self.gst.set_playback(None)
+		self.gst.set_playback()
 
 		if self.keyring.haveLoginDetails():
 			self.startGusic()
@@ -70,6 +70,7 @@ class Gusic(object):
 			if not 'totalTracks' in song:
 				song['totalTracks'] = 0
 			print "adding %s" % song['title']
+			print song
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['albumArtist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl']])
 		#print "setting model"
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
