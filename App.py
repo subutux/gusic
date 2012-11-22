@@ -94,7 +94,7 @@ class Gusic(object):
 		print "Duration:",pretty_duration,"(",duration,")"
 		gobject.timeout_add(250,self._checkProgress)
 	def _checkProgress(self):
-		if self.gst.nowplaying is not None:
+		if self.gst.nowplaying is not None and self.gst.status is self.gst.PLAYING:
 			position = self.gst.getposition() / gst.SECOND
 			self.obj_song_progress.set_value(position)
 			pretty_position = str(position / 60) + ":" + "%.2d" % (position % 60)
