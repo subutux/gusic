@@ -1,2 +1,4 @@
 *.pyc
 gmusicapi.log
+lib/core/gstreamer.old.py
+
