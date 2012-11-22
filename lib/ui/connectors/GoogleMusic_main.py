@@ -16,9 +16,15 @@
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import Gtk
 from lib.core.signals import Signals
+import threading
 class Signals(Signals):
 	def on_toolbutton_play_clicked(self,widget):
 		print "on_toolbutton_play_clicked"
+		if self.mSelf.gst.nowplaying == None:
+			self.on_treeview_main_song_view_row_activated(None,None,None)
+
+		else:
+			self.mSelf.gst.playpause(None)
 	def on_button_exit_clicked(self,widget):
 		self.destroy(None)
 	def on_treeview_main_song_view_row_activated(self,one,two,three) :
@@ -27,6 +33,15 @@ class Signals(Signals):
 		for path in pathlist :
 			tree_iter = model.get_iter(path)
 			songId = model.get_value(tree_iter,5)
+			songTitle = model.get_value(tree_iter,1)
+			songArtist = model.get_value(tree_iter,4)
 			songUrl = self.mSelf.api.get_stream_url(songId)
 			print "url: %s" %songUrl
-			self.mSelf.gst.playpause(songUrl)
+			print "title: %s" %songTitle
+			print "artist: %s" %songArtist
+			self.mSelf.set_song_title(songTitle)
+			self.mSelf.set_song_artist(songArtist)
+			play = threading.Thread(target=self.mSelf.gst.playpause,args=(songUrl,None))
+			play.start()
+			self.mSelf.obj_song_progress.set_sensitive(True)
+			self.mSelf.start_checkProgress(model,tree_iter)

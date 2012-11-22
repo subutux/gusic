@@ -21,8 +21,10 @@ class GStreamer(object):
     def __init__(self):
         self.status = 'NULL'
         self.player = None
+        self.nowplaying = None
         self.PLAYING = 'PLAYING'
         self.STOPPED = 'STOPPED'
+        self.STOP = 'STOP'
         self.PAUSED = 'PAUSED'
         self.NULL = 'NULL'
     def set_playback(self):
@@ -31,7 +33,13 @@ class GStreamer(object):
             bus = self.player.get_bus()
             bus.add_signal_watch()
             bus.connect('message',self.on_message)
-    def playpause(self,song):
+    def playpause(self,song,nope=None):
+        print "playpause"
+        print "---------"
+        print "song:",song
+        print "self.status:",self.status
+        print "self.nowplaying:",self.nowplaying
+
         if song == None and self.status == self.PLAYING:
             self.player.set_state(gst.STATE_PAUSED)
             self.status = self.PAUSED
@@ -43,11 +51,11 @@ class GStreamer(object):
         elif song == None and self.status == self.NULL:
             self.status = self.NULL
             return self.status
-        elif song == None and self.status == 'STOP':
+        elif song == None and self.status == self.STOP:
             return 42
         else:
             if self.nowplaying == None:
-                self.lauch(song)
+                self.launch(song)
                 return self.PLAYING
             elif song == self.nowplaying and self.status == self.PLAYING:
                 self.player.set_state(gst.STATE_PAUSED)
@@ -70,6 +78,7 @@ class GStreamer(object):
             self.player.set_property('uri',song)
             self.player.set_state(gst.STATE_PLAYING)
             self.status = self.PLAYING
+            self.nowplaying = song
     def getnow(self):
         return self.nowplaying
     def getstatus(self):
@@ -77,9 +86,15 @@ class GStreamer(object):
     def getplayer(self):
         return self.player
     def getposition(self):
-        return self.player.query_position(gst.FROMAT_TIME)
+        try:
+            timeF = gst.Format(gst.FORMAT_TIME)
+            position =  self.player.query_position(timeF,None)[0]
+        except gst.QueryError:
+            print "Error Query Position in song. State:",self.player.get_state()
+            position = 0
+        return position
     def seek (self, seconds):
-        value = int(gst_SECOND * seconds)
+        value = int(gst.SECOND * seconds)
         self.player.seek_simple(gst.FROMAT_TIME,gst.SEEK_FLAG_FLUSH,value)
     def on_message(self,bus,message):
         _type = message.type

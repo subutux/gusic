@@ -18,12 +18,16 @@
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
+import gobject
+gobject.threads_init()
+
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
 from gmusicapi.api import Api as gMusicApi
 import threading
+import gst
 import time
 class Gusic(object):
 	def __init__(self):
@@ -34,6 +38,8 @@ class Gusic(object):
 		self.Library = {}
 		self.gst = GStreamer()
 		self.gst.set_playback()
+		self.obj_song_progress = self.mainBuilder.get_object('song_progress')
+		self.label_song_time = self.mainBuilder.get_object('label_song_time')
 
 		if self.keyring.haveLoginDetails():
 			self.startGusic()
@@ -69,12 +75,40 @@ class Gusic(object):
 				song['track'] = 0
 			if not 'totalTracks' in song:
 				song['totalTracks'] = 0
-			print "adding %s" % song['title']
-			print song
-			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['albumArtist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl']])
+			#print "adding %s" % song['title']
+			#print song
+			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
 		#print "setting model"
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
 		#self.treeview_main_song_view.thaw_child_notify()
+	def set_song_title(self,title):
+		label = self.mainBuilder.get_object("label_song_title")
+		label.set_text(title)
+	def set_song_artist(self,artist):
+		label = self.mainBuilder.get_object("label_song_details")
+		label.set_text(artist)
+	def start_checkProgress(self,model,tree_iter):
+		duration = model.get_value(tree_iter,12) / 1000
+		pretty_duration = str(duration / 60) + ":" + "%.2d" % (duration % 60)
+		self.obj_song_progress.set_range(0,duration)
+		print "Duration:",pretty_duration,"(",duration,")"
+		gobject.timeout_add(250,self._checkProgress)
+	def _checkProgress(self):
+		if self.gst.nowplaying is not None:
+			position = self.gst.getposition() / gst.SECOND
+			self.obj_song_progress.set_value(position)
+			pretty_position = str(position / 60) + ":" + "%.2d" % (position % 60)
+			self.label_song_time.set_text(pretty_position)
+			return True
+		else:
+			print "nothing playing"
+
+			self.label_song_time.set_text("00:00")
+			return False
+
+
+
+
 class main():
 	def __init__(self):
 		GLib.threads_init()

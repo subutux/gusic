@@ -2,6 +2,11 @@
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAction" id="action1"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">10000000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -33,6 +38,8 @@
       <column type="gchararray"/>
       <!-- column-name albumArtUrl -->
       <column type="gchararray"/>
+      <!-- column-name durationMilis -->
+      <column type="gint"/>
     </columns>
   </object>
   <object class="GtkWindow" id="window1">
@@ -43,6 +50,7 @@
     <property name="default_width">1000</property>
     <property name="default_height">700</property>
     <property name="hide_titlebar_when_maximized">True</property>
+    <property name="icon">../../imgs/Gusic_logo-128.png</property>
     <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
@@ -186,12 +194,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="toolbutton1">
+              <object class="GtkToolButton" id="toolbutton_next">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Next</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-media-next</property>
+                <signal name="clicked" handler="on_toolbutton_next_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -269,14 +278,14 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkScale" id="scale1">
+                  <object class="GtkScale" id="song_progress">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="adjustment">adjustment1</property>
                     <property name="lower_stepper_sensitivity">off</property>
-                    <property name="fill_level">0</property>
                     <property name="round_digits">1</property>
                     <property name="draw_value">False</property>
-                    <property name="value_pos">left</property>
+                    <signal name="change-value" handler="on_song_progress_change_value" swapped="no"/>
                   </object>
                 </child>
               </object>
