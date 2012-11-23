@@ -14,7 +14,7 @@
 # along with google-music.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
-class Bus(Object):
+class Bus(object):
 	def __init__(self):
 		self.events = {}
 	def registerEvent(self,event):
