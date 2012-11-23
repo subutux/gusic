@@ -32,6 +32,12 @@ class Signals(Signals):
 			self.mSelf.start_checkProgress(model,tree_iter)
 	def on_button_exit_clicked(self,widget):
 		self.destroy(None)
+	def on_menuitem_toggle_mini_activate(self,widget):
+		panel = self.mSelf.mainBuilder.get_object("paned1")
+		if panel.GTK_VISIBLE:
+			panel.hide_all()
+		else:
+			panel.show_all()
 	def on_treeview_main_song_view_row_activated(self,one,two,three) :
 		tree_selection = self.mSelf.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
