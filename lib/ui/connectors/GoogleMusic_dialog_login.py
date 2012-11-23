@@ -20,12 +20,10 @@ import time
 import threading
 class Signals(Signals):
 	def on_button_exit_clicked(self,widget):
-		print "on_button_exit_clicked"
 		self.destroy(None)
 	def on_entry_google_account_password_activate(self,widget):
 		self.on_button_login_clicked(widget)
 	def on_button_login_clicked(self,widget):
-		print "on_button_login_clicked"
 		entry_username = self.mSelf.loginBuilder.get_object("entry_google_account_user")
 		entry_password = self.mSelf.loginBuilder.get_object("entry_google_account_password")
 		label_status = self.mSelf.loginBuilder.get_object("label_login_status")
@@ -53,7 +51,7 @@ class Signals(Signals):
 			#print self.mSelf.Library['songs']
 			spinner_login.set_visible(False)
 			self.mSelf.loggedIn = True
-			self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
+			#self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
 			self.mSelf.startGusic(True)
 		else:
 			label_status.set_text("Unable to login.")
