@@ -25,6 +25,7 @@ from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
+from lib.core.bus import Bus
 from gmusicapi.api import Api as gMusicApi
 import threading
 import gst
@@ -45,6 +46,11 @@ class Gusic(object):
 		self.obj_song_progress = self.mainBuilder.get_object('song_progress')
 		self.label_song_time = self.mainBuilder.get_object('label_song_time')
 		self.toolbutton_play = self.mainBuilder.get_object('toolbutton_play')
+		self.Bus = Bus()
+		self.Bus.registerEvent("on-start-playing")
+		self.Bus.registerEvent("on-pause")
+		self.Bus.registerEvent("on-login")
+		self.Bus.registerEvent("on-update-library")
 
 
 		if self.keyring.haveLoginDetails():
