@@ -42,14 +42,27 @@
       <column type="gint"/>
     </columns>
   </object>
+  <object class="GtkListStore" id="liststore_media">
+    <columns>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name type -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Media Library</col>
+        <col id="1" translatable="yes">main_view_switch</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkWindow" id="window1">
     <property name="width_request">1000</property>
-    <property name="height_request">800</property>
+    <property name="height_request">600</property>
     <property name="can_focus">False</property>
     <property name="window_position">center</property>
     <property name="default_width">1000</property>
-    <property name="default_height">700</property>
-    <property name="hide_titlebar_when_maximized">True</property>
+    <property name="default_height">600</property>
     <property name="icon">../../imgs/Gusic_logo-128.png</property>
     <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
@@ -166,6 +179,7 @@
             <property name="height_request">45</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="toolbar_style">both</property>
             <child>
               <object class="GtkToolButton" id="toolbutton_prev">
                 <property name="visible">True</property>
@@ -208,14 +222,30 @@
               </packing>
             </child>
             <child>
+              <object class="GtkToolItem" id="toolbutton1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkToolItem" id="toolbutton_art">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="image_toolbar_art">
+                    <property name="width_request">50</property>
+                    <property name="height_request">50</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-orientation-portrait</property>
+                    <property name="pixbuf">../../imgs/Gusic_logo-32.png</property>
+                    <property name="icon-size">3</property>
                   </object>
                 </child>
               </object>
@@ -238,13 +268,14 @@
                       <object class="GtkLabel" id="label_song_title">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="label" translatable="yes">label_song_title</property>
+                        <property name="justify">fill</property>
                         <property name="single_line_mode">True</property>
                         <attributes>
                           <attribute name="style" value="normal"/>
                           <attribute name="weight" value="bold"/>
                           <attribute name="variant" value="small-caps"/>
-                          <attribute name="stretch" value="condensed"/>
                         </attributes>
                       </object>
                       <packing>
@@ -257,6 +288,7 @@
                       <object class="GtkLabel" id="label_song_details">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="label" translatable="yes">label_song_details</property>
                       </object>
                       <packing>
@@ -279,6 +311,7 @@
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkScale" id="song_progress">
+                    <property name="width_request">200</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="adjustment">adjustment1</property>
@@ -361,9 +394,32 @@
                     <property name="width_request">180</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">never</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <placeholder/>
+                      <object class="GtkTreeView" id="treeview_media_view">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">liststore_media</property>
+                        <property name="headers_visible">False</property>
+                        <property name="headers_clickable">False</property>
+                        <property name="enable_search">False</property>
+                        <property name="fixed_height_mode">True</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection" id="treeview-selection2"/>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                            <property name="title" translatable="yes">column</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="cellrenderertext5"/>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
                     </child>
                   </object>
                   <packing>
@@ -374,9 +430,11 @@
                 </child>
                 <child>
                   <object class="GtkImage" id="image_art">
+                    <property name="width_request">200</property>
+                    <property name="height_request">200</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-orientation-portrait</property>
+                    <property name="pixbuf">../../imgs/Gusic_logo-128.png</property>
                     <property name="icon-size">6</property>
                   </object>
                   <packing>
@@ -425,7 +483,6 @@
                         <property name="resizable">True</property>
                         <property name="fixed_width">200</property>
                         <property name="title" translatable="yes">Title</property>
-                        <property name="clickable">True</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
                         <child>
@@ -441,7 +498,6 @@
                         <property name="resizable">True</property>
                         <property name="fixed_width">100</property>
                         <property name="title" translatable="yes">Artist</property>
-                        <property name="clickable">True</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
                         <child>
