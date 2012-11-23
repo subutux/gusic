@@ -35,11 +35,17 @@ class Gusic(object):
 		self.main = self.mainBuilder.get_object('window1')
 		self.keyring = keyring()
 		self.api = gMusicApi()
+		self.song = {
+			"duration": [],
+			"GtkSource": []
+		}
 		self.Library = {}
 		self.gst = GStreamer()
 		self.gst.set_playback()
 		self.obj_song_progress = self.mainBuilder.get_object('song_progress')
 		self.label_song_time = self.mainBuilder.get_object('label_song_time')
+		self.toolbutton_play = self.mainBuilder.get_object('toolbutton_play')
+
 
 		if self.keyring.haveLoginDetails():
 			self.startGusic()
@@ -59,7 +65,6 @@ class Gusic(object):
 			time.sleep(0.5)
 		return True
 	def fetchMusicLibrary(self):
-		print "fetchMusicLibrary"
 		self.Library['songs'] = self.api.get_all_songs()
 		self.liststore_all_songs = self.mainBuilder.get_object('liststore_all_songs')
 		self.treeview_main_song_view = self.mainBuilder.get_object('treeview_main_song_view')
@@ -91,22 +96,31 @@ class Gusic(object):
 		duration = model.get_value(tree_iter,12) / 1000
 		pretty_duration = str(duration / 60) + ":" + "%.2d" % (duration % 60)
 		self.obj_song_progress.set_range(0,duration)
-		print "Duration:",pretty_duration,"(",duration,")"
+		self.song["duration"] = [duration,pretty_duration]
+		self.song['GtkSource'] = [model,tree_iter]
 		gobject.timeout_add(250,self._checkProgress)
 	def _checkProgress(self):
 		if self.gst.nowplaying is not None and self.gst.status is self.gst.PLAYING:
+			if self.toolbutton_play.get_property("stock-id") != "gtk-media-pause":
+				self.toolbutton_play.set_property("stock-id","gtk-media-pause")
 			position = self.gst.getposition() / gst.SECOND
 			self.obj_song_progress.set_value(position)
 			pretty_position = str(position / 60) + ":" + "%.2d" % (position % 60)
 			self.label_song_time.set_text(pretty_position)
 			return True
+		elif self.gst.nowplaying is not None and self.gst.status is self.gst.PAUSED:
+			if self.toolbutton_play.get_property("stock-id") != "gtk-media-play":
+				self.toolbutton_play.set_property("stock-id","gtk-media-play")
 		else:
-			print "nothing playing"
-
+			self.toolbutton_play.set_property("stock-id","gtk-media-play")
 			self.label_song_time.set_text("00:00")
 			return False
 
-
+	def Error(self,title,body):
+		dialog = Gtk.MessageDialog(parent=self.main,flags=Gtk.DialogFlags.MODAL,type=Gtk.MessageType.ERROR,buttons=Gtk.ButtonsType.CANCEL,message_format=title)
+		dialog.format_secondary_text(body)
+		dialog.run()
+		dialog.destroy()
 
 
 class main():
