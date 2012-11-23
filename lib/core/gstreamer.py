@@ -34,11 +34,11 @@ class GStreamer(object):
             bus.add_signal_watch()
             bus.connect('message',self.on_message)
     def playpause(self,song,nope=None):
-        print "playpause"
-        print "---------"
-        print "song:",song
-        print "self.status:",self.status
-        print "self.nowplaying:",self.nowplaying
+        # print "playpause"
+        # print "---------"
+        # print "song:",song
+        # print "self.status:",self.status
+        # print "self.nowplaying:",self.nowplaying
 
         if song == None and self.status == self.PLAYING:
             self.player.set_state(gst.STATE_PAUSED)
@@ -90,7 +90,6 @@ class GStreamer(object):
             timeF = gst.Format(gst.FORMAT_TIME)
             position =  self.player.query_position(timeF,None)[0]
         except gst.QueryError:
-            print "Error Query Position in song. State:",self.player.get_state()
             position = 0
         return position
     def seek (self, seconds):
