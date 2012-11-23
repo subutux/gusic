@@ -108,6 +108,7 @@ class Gusic(object):
 	def _checkProgress(self):
 		if self.gst.nowplaying is not None and self.gst.status is self.gst.PLAYING:
 			if self.toolbutton_play.get_property("stock-id") != "gtk-media-pause":
+				self.Bus.emit('on-start-playing')
 				self.toolbutton_play.set_property("stock-id","gtk-media-pause")
 			position = self.gst.getposition() / gst.SECOND
 			self.obj_song_progress.set_value(position)
@@ -116,6 +117,7 @@ class Gusic(object):
 			return True
 		elif self.gst.nowplaying is not None and self.gst.status is self.gst.PAUSED:
 			if self.toolbutton_play.get_property("stock-id") != "gtk-media-play":
+				self.Bus.emit('on-pause')
 				self.toolbutton_play.set_property("stock-id","gtk-media-play")
 		else:
 			self.toolbutton_play.set_property("stock-id","gtk-media-play")

@@ -17,15 +17,11 @@
 from gi.repository import GdkPixbuf, Gdk
 import urllib2
 def setImageFromUrl(GtkImage,url,scale=None):
-	print "tools.setImageFromUrl"
-	print "---------------------"
 	pixbufl = GdkPixbuf.PixbufLoader()
 	ulib = urllib2.urlopen(url)
-	print "downloading image from url:",url
 	pixbufl.write(ulib.read())
 	pixbufl.close()
 	pixbuf = pixbufl.get_pixbuf()
 	if scale is not None:
 		pixbuf = pixbuf.scale_simple(scale[1],scale[1],GdkPixbuf.InterpType.BILINEAR)
 	GtkImage.set_from_pixbuf(pixbuf)
-	print "Image set"

@@ -33,6 +33,8 @@ class Signals(Signals):
 		doLogin = threading.Thread(target=self.mSelf.api.login,args=(entry_username.get_text(),entry_password.get_text()))
 		label_status.set_text("Logging in ...")
 		spinner_login.set_visible(True)
+		spinner_login.active = True
+		spinner_login.start()
 		doLogin.start()
 		while doLogin.isAlive():
 			while Gtk.events_pending():

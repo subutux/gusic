@@ -19,9 +19,9 @@ class Bus(object):
 		self.events = {}
 	def registerEvent(self,event):
 		self.events[event] = [];
-	def listenOn(self,event,function):
+	def connect(self,event,function):
 		self.events[event].append(function)
 	def emit(self,event):
-		for function in self.events[event]:
+		for function in self.events[event] and self.events is not []:
 			function()
 	
