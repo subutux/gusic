@@ -21,7 +21,6 @@ class keyring(object):
 		self.loginDetails = False
 		if gk.is_available() is True:
 			if "GoogleMusic" in gk.list_keyring_names_sync()[1]:
-				print "have keyring"
 				self.keyring = gk.list_item_ids_sync("GoogleMusic")[1]
 
 				self.loginDetails = self._get_first_key("GoogleMusic")
@@ -44,7 +43,6 @@ class keyring(object):
 		return False
 	def _get_first_key(self,keyring):
 		item_keys = gk.list_item_ids_sync(keyring)
-		print "keys:",item_keys
 		if len(item_keys[1]) > 0:
 			item_info = gk.item_get_info_sync(keyring,item_keys[1][0])
 			return (item_info[1].get_display_name(),item_info[1].get_secret())
