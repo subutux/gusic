@@ -23,5 +23,6 @@ def setImageFromUrl(GtkImage,url,scale=None):
 	pixbufl.close()
 	pixbuf = pixbufl.get_pixbuf()
 	if scale is not None:
-		pixbuf = pixbuf.scale_simple(scale[1],scale[1],GdkPixbuf.InterpType.BILINEAR)
-	GtkImage.set_from_pixbuf(pixbuf)
+		print "scaling",scale[0],scale[1]
+		pixbuf = pixbuf.scale_simple(scale[0],scale[1],GdkPixbuf.InterpType.BILINEAR)
+	GtkImage.set_from_pixbuf(GdkPixbuf.Pixbuf.copy(pixbuf))
