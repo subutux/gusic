@@ -28,7 +28,6 @@ class Config(object):
 		self.RecordType = GusicRecordTypes()
 		self.getPlaylistMethod = """function(doc) {emit(doc_id,doc)}"""
 	def AddSong(self,songObj,quiet=True):
-
 		r = Record(songObj,record_type=self.RecordType.music,record_id=songObj['songid'])
 		if self.db.record_exists(songObj['songid']):
 			rid = db.update_records(songObj['songid'],r)
