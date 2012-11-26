@@ -22,6 +22,7 @@ class Bus(object):
 	def connect(self,event,function):
 		self.events[event].append(function)
 	def emit(self,event):
-		for function in self.events[event] and self.events is not []:
-			function()
+		if self.events is not []:
+			for function in self.events[event]:
+				function()
 	

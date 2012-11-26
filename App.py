@@ -27,6 +27,7 @@ from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
 from lib.core.cache import Cache
+from lib.core import tools
 from gmusicapi.api import Api as gMusicApi
 import threading
 import gst
@@ -52,7 +53,10 @@ class Gusic(object):
 		self.Bus.registerEvent("on-pause")
 		self.Bus.registerEvent("on-login")
 		self.Bus.registerEvent("on-update-library")
+		self.Bus.registerEvent("on-song-ended")
+		self.Bus.connect("on-song-ended",self._playNext)
 		self.Cache = Cache()
+		#self.mainBuilder.get_object("paned1").set_property('handle-size',1)
 
 
 		if self.keyring.haveLoginDetails():
@@ -128,9 +132,43 @@ class Gusic(object):
 				self.toolbutton_play.set_property("stock-id","gtk-media-play")
 		else:
 			self.toolbutton_play.set_property("stock-id","gtk-media-play")
+			self.Bus.emit("on-song-ended")
+			self.obj_song_progress.set_value(0)
 			self.label_song_time.set_text("00:00")
 			return False
+	def _playIter(self,model,tree_iter):
+			songId = model.get_value(tree_iter,5)
+			songTitle = model.get_value(tree_iter,1)
+			songArtist = model.get_value(tree_iter,4)
+			try:
+			 	songUrl = self.api.get_stream_url(songId)
+			except urllib2.HTTPError:
+				self.Error(title="Error retrieving stream",body="Gusic was unable to retrieve the streaming url. This likely means that you've exceeded your streaming limit. (Ouch!)")
+				return False
+			self.set_song_title(songTitle)
+			self.set_song_artist(songArtist)
+			play = threading.Thread(target=self.gst.playpause,args=(songUrl,None))
+			play.start()
+			self.obj_song_progress.set_sensitive(True)
+			imgUrl = 'http:' + model.get_value(tree_iter,11)
+			print "Requesting AlbumArt:",imgUrl
+			if imgUrl is not 'http:null':
+				setImg = threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.Cache,[50,50]))
+				setImg.start()
+				setMImg = threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_art"),imgUrl,self.Cache,[200,200]))
+				setMImg.start()
+			else:
 
+				self.mainBuilder.get_object("image_toolbar_art").set_from_file("../../imgs/Gusic_logo-32.png")
+				self.mainBuilder.get_object("image_art").set_from_file("../../imgs/Gusic_logo-128.png")
+			self.start_checkProgress(model,tree_iter)
+	def _playNext(self):
+		tree_selection = self.treeview_main_song_view.get_selection()
+		(model, pathlist) = tree_selection.get_selected_rows()
+		tree_iter = model.get_iter(pathlist[0])
+		next_iter = model.iter_next(tree_iter)
+		self.treeview_main_song_view.set_cursor(model.get_path(next_iter))
+		self._playIter(model,next_iter)
 	def Error(self,title,body):
 		dialog = Gtk.MessageDialog(parent=self.main,flags=Gtk.DialogFlags.MODAL,type=Gtk.MessageType.ERROR,buttons=Gtk.ButtonsType.CANCEL,message_format=title)
 		dialog.format_secondary_text(body)

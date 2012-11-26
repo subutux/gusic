@@ -33,39 +33,17 @@ class Signals(Signals):
 	def on_button_exit_clicked(self,widget):
 		self.destroy(None)
 	def on_menuitem_toggle_mini_activate(self,widget):
-		panel = self.mSelf.mainBuilder.get_object("paned1")
-		if panel.GTK_VISIBLE:
-			panel.hide_all()
+		paned = self.mSelf.mainBuilder.get_object("paned1")
+		if paned.get_property('visible'):
+			paned.set_property('visible',False)
 		else:
-			panel.show_all()
+			paned.set_property('visible',True)
+		return True
+	def on_toolbutton_next_clicked(self,widget):
+		self.mSelf._playNext()
+		return True
 	def on_treeview_main_song_view_row_activated(self,one,two,three) :
 		tree_selection = self.mSelf.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
-		for path in pathlist :
-			tree_iter = model.get_iter(path)
-			songId = model.get_value(tree_iter,5)
-			songTitle = model.get_value(tree_iter,1)
-			songArtist = model.get_value(tree_iter,4)
-			try:
-			 	songUrl = self.mSelf.api.get_stream_url(songId)
-			except urllib2.HTTPError:
-				self.mSelf.Error(title="Error retrieving stream",body="Gusic was unable to retrieve the streaming url. This likely means that you've exceeded your streaming limit. (Ouch!)")
-				return False
-			self.mSelf.set_song_title(songTitle)
-			self.mSelf.set_song_artist(songArtist)
-			play = threading.Thread(target=self.mSelf.gst.playpause,args=(songUrl,None))
-			play.start()
-			self.mSelf.obj_song_progress.set_sensitive(True)
-			imgUrl = 'http:' + model.get_value(tree_iter,11)
-			print "Requesting AlbumArt:",imgUrl
-			if imgUrl is not 'http:null':
-				setImg = threading.Thread(target=tools.setImageFromCache,args=(self.mSelf.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.mSelf.Cache,[50,50]))
-				setImg.start()
-				setMImg = threading.Thread(target=tools.setImageFromCache,args=(self.mSelf.mainBuilder.get_object("image_art"),imgUrl,self.mSelf.Cache,[200,200]))
-				setMImg.start()
-			else:
-
-				self.mSelf.mainBuilder.get_object("image_toolbar_art").set_from_file("../../imgs/Gusic_logo-32.png")
-				self.mSelf.mainBuilder.get_object("image_art").set_from_file("../../imgs/Gusic_logo-128.png")
-			self.mSelf.start_checkProgress(model,tree_iter)
+		self.mSelf._playIter(model,model.get_iter(pathlist[0]))
 
