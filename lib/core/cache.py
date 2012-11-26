@@ -28,8 +28,11 @@ class Cache(object):
 		cache = []
 		for url in cacheURLs:
 			fname = url.rsplit('/',1)[1]
+			print "Cache: Request for",fname
 			if not os.path.isfile(self.cacheImages + '/' + fname):
+				print "Cache:",fname,"not found"
 				if auto_cache:
+					print "Cache: Downloading",url
 					ul = urllib2.urlopen(url)
 					open(self.cacheImages + '/' + fname,'w').write(ul.read())
 			if not quiet:

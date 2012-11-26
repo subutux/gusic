@@ -57,11 +57,15 @@ class Signals(Signals):
 			play.start()
 			self.mSelf.obj_song_progress.set_sensitive(True)
 			imgUrl = 'http:' + model.get_value(tree_iter,11)
-			if imgUrl is not 'http:null'
+			print "Requesting AlbumArt:",imgUrl
+			if imgUrl is not 'http:null':
 				setImg = threading.Thread(target=tools.setImageFromCache,args=(self.mSelf.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.mSelf.Cache,[50,50]))
 				setImg.start()
 				setMImg = threading.Thread(target=tools.setImageFromCache,args=(self.mSelf.mainBuilder.get_object("image_art"),imgUrl,self.mSelf.Cache,[200,200]))
 				setMImg.start()
+			else:
 
+				self.mSelf.mainBuilder.get_object("image_toolbar_art").set_from_file("../../imgs/Gusic_logo-32.png")
+				self.mSelf.mainBuilder.get_object("image_art").set_from_file("../../imgs/Gusic_logo-128.png")
 			self.mSelf.start_checkProgress(model,tree_iter)
 

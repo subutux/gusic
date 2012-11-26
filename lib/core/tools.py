@@ -27,14 +27,11 @@ def setImageFromUrl(GtkImage,url,scale=None):
 		pixbuf = pixbuf.scale_simple(scale[0],scale[1],GdkPixbuf.InterpType.BILINEAR)
 	GtkImage.set_from_pixbuf(GdkPixbuf.Pixbuf.copy(pixbuf))
 def setImageFromCache(GtkImage,url,cache,scale=None):
-	if cache.imageIsCached(url):
-		image = cache.checkImageCache([url],auto_cache=True,quiet=False)[0]
-		if scale is None:
-			pb = GdkPixbuf.Pixbuf.new_from_file(image)
-		else:
-			pb = GdkPixbuf.Pixbuf.new_from_file_at_size(image,scale[0],scale[1])
-		GtkImage.set_from_pixbuf(pb)
-		return True
+	image = cache.checkImageCache([url],auto_cache=True,quiet=False)[0]
+	if scale is None:
+		pb = GdkPixbuf.Pixbuf.new_from_file(image)
 	else:
-		return False
+		pb = GdkPixbuf.Pixbuf.new_from_file_at_size(image,scale[0],scale[1])
+	GtkImage.set_from_pixbuf(pb)
+	return True
 
