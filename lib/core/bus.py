@@ -25,4 +25,3 @@ class Bus(object):
 		if self.events is not []:
 			for function in self.events[event]:
 				function()
-	

@@ -470,6 +470,9 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn_track">
                         <property name="resizable">True</property>
+                        <property name="sizing">fixed</property>
+                        <property name="fixed_width">40</property>
+                        <property name="min_width">40</property>
                         <property name="title" translatable="yes">Track</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
@@ -485,6 +488,8 @@
                       <object class="GtkTreeViewColumn" id="treeviewcolumn_title">
                         <property name="resizable">True</property>
                         <property name="fixed_width">200</property>
+                        <property name="min_width">200</property>
+                        <property name="max_width">400</property>
                         <property name="title" translatable="yes">Title</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
@@ -500,6 +505,8 @@
                       <object class="GtkTreeViewColumn" id="treeviewcolumn_artist">
                         <property name="resizable">True</property>
                         <property name="fixed_width">100</property>
+                        <property name="min_width">100</property>
+                        <property name="max_width">300</property>
                         <property name="title" translatable="yes">Artist</property>
                         <property name="reorderable">True</property>
                         <property name="sort_indicator">True</property>
@@ -513,6 +520,8 @@
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn_album">
+                        <property name="sizing">autosize</property>
+                        <property name="fixed_width">100</property>
                         <property name="title" translatable="yes">Album</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext4"/>

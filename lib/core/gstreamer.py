@@ -34,12 +34,6 @@ class GStreamer(object):
             bus.add_signal_watch()
             bus.connect('message',self.on_message)
     def playpause(self,song,nope=None):
-        # print "playpause"
-        # print "---------"
-        # print "song:",song
-        # print "self.status:",self.status
-        # print "self.nowplaying:",self.nowplaying
-
         if song == None and self.status == self.PLAYING:
             self.player.set_state(gst.STATE_PAUSED)
             self.status = self.PAUSED

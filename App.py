@@ -56,6 +56,7 @@ class Gusic(object):
 		self.Bus.registerEvent("on-song-ended")
 		self.Bus.connect("on-song-ended",self._playNext)
 		self.Cache = Cache()
+		#TODO: set Style properties
 		#self.mainBuilder.get_object("paned1").set_property('handle-size',1)
 
 
@@ -80,8 +81,6 @@ class Gusic(object):
 		self.Library['songs'] = self.api.get_all_songs()
 		self.liststore_all_songs = self.mainBuilder.get_object('liststore_all_songs')
 		self.treeview_main_song_view = self.mainBuilder.get_object('treeview_main_song_view')
-		#self.treeview_main_song_view.freeze_child_notify()
-		#self.treeview_main_song_view.set_model(self.liststore_all_songs)
 		songAdd = 0
 		albumArtUrls = []
 		for song in self.Library['songs']:
@@ -95,14 +94,8 @@ class Gusic(object):
 				song['track'] = 0
 			if not 'totalTracks' in song:
 				song['totalTracks'] = 0
-			#print "adding %s" % song['title']
-			#print song
-			#print albumArtUrls
-			#self.Cache.checkImageCache(cacheURLs=albumArtUrls,auto_cache=True,quiet=True)
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
-		#print "setting model"
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
-		#self.treeview_main_song_view.thaw_child_notify()
 	def set_song_title(self,title):
 		label = self.mainBuilder.get_object("label_song_title")
 		label.set_text(title)
@@ -130,7 +123,7 @@ class Gusic(object):
 			if self.toolbutton_play.get_property("stock-id") != "gtk-media-play":
 				self.Bus.emit('on-pause')
 				self.toolbutton_play.set_property("stock-id","gtk-media-play")
-		else:
+		elif self.gst.status is self.gst.NULL:
 			self.toolbutton_play.set_property("stock-id","gtk-media-play")
 			self.Bus.emit("on-song-ended")
 			self.obj_song_progress.set_value(0)
@@ -151,18 +144,15 @@ class Gusic(object):
 			play.start()
 			self.obj_song_progress.set_sensitive(True)
 			imgUrl = 'http:' + model.get_value(tree_iter,11)
-			print "Requesting AlbumArt:",imgUrl
 			if imgUrl is not 'http:null':
-				setImg = threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.Cache,[50,50]))
-				setImg.start()
-				setMImg = threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_art"),imgUrl,self.Cache,[200,200]))
-				setMImg.start()
+				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.Cache,[50,50])).start()
+				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_art"),imgUrl,self.Cache,[200,200])).start()
 			else:
-
 				self.mainBuilder.get_object("image_toolbar_art").set_from_file("../../imgs/Gusic_logo-32.png")
 				self.mainBuilder.get_object("image_art").set_from_file("../../imgs/Gusic_logo-128.png")
 			self.start_checkProgress(model,tree_iter)
 	def _playNext(self):
+		self.gst.playpause(None)
 		tree_selection = self.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
 		tree_iter = model.get_iter(pathlist[0])

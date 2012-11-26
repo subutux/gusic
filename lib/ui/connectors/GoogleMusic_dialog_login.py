@@ -50,7 +50,6 @@ class Signals(Signals):
 			while fetchSongs.isAlive():
 				while Gtk.events_pending():
 					Gtk.main_iteration()
-			#print self.mSelf.Library['songs']
 			spinner_login.set_visible(False)
 			self.mSelf.loggedIn = True
 			#self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
