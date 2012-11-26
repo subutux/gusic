@@ -26,6 +26,7 @@ from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
+from lib.core.cache import Cache
 from gmusicapi.api import Api as gMusicApi
 import threading
 import gst
@@ -51,6 +52,7 @@ class Gusic(object):
 		self.Bus.registerEvent("on-pause")
 		self.Bus.registerEvent("on-login")
 		self.Bus.registerEvent("on-update-library")
+		self.Cache = Cache()
 
 
 		if self.keyring.haveLoginDetails():
@@ -77,9 +79,12 @@ class Gusic(object):
 		#self.treeview_main_song_view.freeze_child_notify()
 		#self.treeview_main_song_view.set_model(self.liststore_all_songs)
 		songAdd = 0
+		albumArtUrls = []
 		for song in self.Library['songs']:
 			if not 'albumArtUrl' in song:
 				song['albumArtUrl'] = 'null'
+			else:
+				albumArtUrls.append(song['albumArtUrl'])
 			if not 'disc' in song:
 				song['disc'] = 0
 			if not 'track' in song:
@@ -88,6 +93,7 @@ class Gusic(object):
 				song['totalTracks'] = 0
 			#print "adding %s" % song['title']
 			#print song
+			self.Cache.checkImageCache(cacheURLs=albumArtUrls,auto_cache=True,quiet=True)
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
 		#print "setting model"
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
