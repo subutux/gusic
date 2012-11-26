@@ -28,23 +28,23 @@ class Cache(object):
 		cache = []
 		for url in cacheURLs:
 			fname = url.rsplit('/',1)[1]
-			if not os.path.stat(self.cacheImage + '/' + fname):
+			if not os.path.isfile(self.cacheImages + '/' + fname):
 				if auto_cache:
 					ul = urllib2.urlopen(url)
-					open(self.cacheImage + '/' + fname,'w').write(ul.read())
+					open(self.cacheImages + '/' + fname,'w').write(ul.read())
 			if not quiet:
-				cache.append(self.chacheImage + '/' + fname)
+				cache.append(self.chacheImages + '/' + fname)
 			else:
 				return True
 	def getImageFromCache(self,url):
 		fname = url.rsplit('/',1)[1]
-		if os.path.stat(self.cacheImage + '/' + fname):
+		if os.path.isfile(self.cacheImages + '/' + fname):
 			return self.cacheImage + '/' + fname
 		else:
 			return False
 	def imageIsCached(self,url):
 		fname = url.rsplit('/',1)[1]
-		if os.path.stat(self.cacheImage + '/' + fname):
+		if os.path.isfile(self.cacheImages + '/' + fname):
 			return True
 		else:
 			return False
