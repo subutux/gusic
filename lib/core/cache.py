@@ -21,9 +21,9 @@ class Cache(object):
 		self.cacheLocation = os.environ['HOME'] + '/.local/share/gusic/cache'
 		self.cacheImages = self.cacheLocation + '/images'
 		if not os.path.isdir(self.cacheLocation):
-			os.path.mkdir(self.cacheLocation)
+			os.makedirs(self.cacheLocation)
 		if not os.path.isdir(self.cacheImages):
-			os.path.mkdir(self.cacheImages)
+			os.makedirs(self.cacheImages)
 	def checkImageCache(self,cacheURLs,auto_cache=True,quiet=True):
 		cache = []
 		for url in cacheURLs:
