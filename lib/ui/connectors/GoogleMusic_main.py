@@ -56,9 +56,9 @@ class Signals(Signals):
 			play = threading.Thread(target=self.mSelf.gst.playpause,args=(songUrl,None))
 			play.start()
 			self.mSelf.obj_song_progress.set_sensitive(True)
-			setImg = threading.Thread(target=tools.setImageFromUrl,args=(self.mSelf.mainBuilder.get_object("image_toolbar_art"),'http:' + model.get_value(tree_iter,11),[50,50]))
+			setImg = threading.Thread(target=tools.setImageFromCache,args=(self.mSelf.mainBuilder.get_object("image_toolbar_art"),'http:' + model.get_value(tree_iter,11),self.mSelf.Cache,[50,50]))
 			setImg.start()
-			setMImg = threading.Thread(target=tools.setImageFromUrl,args=(self.mSelf.mainBuilder.get_object("image_art"),'http:' + model.get_value(tree_iter,11),[200,200]))
+			setMImg = threading.Thread(target=tools.setImageFromUrl,args=(self.mSelf.mainBuilder.get_object("image_art"),'http:' + model.get_value(tree_iter,11),self.mSelf.Cache,[200,200]))
 			setMImg.start()
 			self.mSelf.start_checkProgress(model,tree_iter)
 
