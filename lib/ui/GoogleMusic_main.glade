@@ -330,16 +330,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkScale" id="song_progress">
-                    <property name="width_request">200</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="adjustment">adjustment1</property>
-                    <property name="lower_stepper_sensitivity">off</property>
-                    <property name="round_digits">1</property>
-                    <property name="draw_value">False</property>
-                    <signal name="change-value" handler="on_song_progress_change_value" swapped="no"/>
-                  </object>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -348,28 +339,19 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolItem" id="toolbutton_time">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkLabel" id="label_song_time">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">00:00</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToolItem" id="toolbutton2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <placeholder/>
+                  <object class="GtkScale" id="song_progress">
+                    <property name="width_request">200</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adjustment1</property>
+                    <property name="lower_stepper_sensitivity">off</property>
+                    <property name="draw_value">False</property>
+                    <signal name="change-value" handler="on_song_progress_change_value" swapped="no"/>
+                  </object>
                 </child>
               </object>
               <packing>
@@ -382,9 +364,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkSpinner" id="spinner1">
+                  <object class="GtkLabel" id="label_song_time">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">00:00</property>
                   </object>
                 </child>
               </object>
