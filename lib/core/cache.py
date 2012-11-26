@@ -42,3 +42,9 @@ class Cache(object):
 			return self.cacheImage + '/' + fname
 		else:
 			return False
+	def imageIsCached(self,url):
+		fname = url.rsplit('/',1)[1]
+		if os.path.stat(self.cacheImage + '/' + fname):
+			return True
+		else:
+			return False
