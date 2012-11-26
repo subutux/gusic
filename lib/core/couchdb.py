@@ -38,15 +38,21 @@ class DB(object):
 		else:
 			return True
 	def AddSetting(self,settingObj,quiet=True):
-		r = Record(settingObj,record_type=self.RecordType.setting)
-		rid = db.put.record(r)
+		r = Record(settingObj,record_type=self.RecordType.setting,record_id=settingObj['setid'])
+		if self.db.record_exists(settingObj['setid']):
+			rid = self.db_update_records(settingObj['setid'],settingObj)
+		else:
+			rid = db.put_record(r)
 		if not quiet:
 			return rid
 		else:
 			return True
 	def AddPlaylist(self,playlistObj,quiet=True):
 		r = Record(playlistObj,record_type=self.RecordType.playlist)
-		rid = db.put.record(r)
+		if self.db.record_exists(playlistObj['playlistid']):
+			rid = self.db_update_records(playlistObj['playlistid'],playlistObj)
+		else:
+			rid = db.put_record(r)
 		if not quiet:
 			return rid
 		else:
