@@ -32,7 +32,7 @@ class DB(object):
 		if self.db.record_exists(songObj['songid']):
 			rid = db.update_records(songObj['songid'],r)
 		else:
-			rid = db.put_record(r)
+			rid = self.db.put_record(r)
 		if not quiet:
 			return rid
 		else:
@@ -42,7 +42,7 @@ class DB(object):
 		if self.db.record_exists(settingObj['setid']):
 			rid = self.db_update_records(settingObj['setid'],settingObj)
 		else:
-			rid = db.put_record(r)
+			rid = self.db.put_record(r)
 		if not quiet:
 			return rid
 		else:
@@ -52,7 +52,7 @@ class DB(object):
 		if self.db.record_exists(playlistObj['playlistid']):
 			rid = self.db_update_records(playlistObj['playlistid'],playlistObj)
 		else:
-			rid = db.put_record(r)
+			rid = self.db.put_record(r)
 		if not quiet:
 			return rid
 		else:
