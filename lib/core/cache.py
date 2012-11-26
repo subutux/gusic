@@ -33,13 +33,16 @@ class Cache(object):
 					ul = urllib2.urlopen(url)
 					open(self.cacheImages + '/' + fname,'w').write(ul.read())
 			if not quiet:
-				cache.append(self.chacheImages + '/' + fname)
-			else:
-				return True
+				cache.append(self.cacheImages + '/' + fname)
+		if not quiet:
+			return cache
+		else:
+			return True
+
 	def getImageFromCache(self,url):
 		fname = url.rsplit('/',1)[1]
 		if os.path.isfile(self.cacheImages + '/' + fname):
-			return self.cacheImage + '/' + fname
+			return self.cacheImages + '/' + fname
 		else:
 			return False
 	def imageIsCached(self,url):

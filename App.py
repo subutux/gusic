@@ -84,7 +84,7 @@ class Gusic(object):
 			if not 'albumArtUrl' in song:
 				song['albumArtUrl'] = 'null'
 			else:
-				albumArtUrls.append(song['albumArtUrl'])
+				albumArtUrls.append('http:' + song['albumArtUrl'])
 			if not 'disc' in song:
 				song['disc'] = 0
 			if not 'track' in song:
@@ -93,7 +93,8 @@ class Gusic(object):
 				song['totalTracks'] = 0
 			#print "adding %s" % song['title']
 			#print song
-			self.Cache.checkImageCache(cacheURLs=albumArtUrls,auto_cache=True,quiet=True)
+			#print albumArtUrls
+			#self.Cache.checkImageCache(cacheURLs=albumArtUrls,auto_cache=True,quiet=True)
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
 		#print "setting model"
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
