@@ -45,9 +45,14 @@ class Signals(Signals):
 			img_ok_pass.set_visible(True)
 			label_status.set_text("Downloading music information ...")
 			fetchSongs = threading.Thread(target=self.mSelf.fetchMusicLibrary)
-
 			fetchSongs.start()
 			while fetchSongs.isAlive():
+				while Gtk.events_pending():
+					Gtk.main_iteration()
+			label_status.set_text("Downloading playlist information ...")
+			fetchPlaylist = threading.Thread(target=self.mSelf.fetchPlaylistLibrary)
+			fetchPlaylist.start()
+			while fetchPlaylist.isAlive():
 				while Gtk.events_pending():
 					Gtk.main_iteration()
 			spinner_login.set_visible(False)

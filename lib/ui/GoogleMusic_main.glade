@@ -53,13 +53,29 @@
       <column type="gchararray"/>
       <!-- column-name type -->
       <column type="gchararray"/>
+      <!-- column-name playlist_id -->
+      <column type="gint"/>
+      <!-- column-name icon -->
+      <column type="GdkPixbuf"/>
     </columns>
     <data>
       <row>
         <col id="0" translatable="yes">Media Library</col>
         <col id="1" translatable="yes">main_view_switch</col>
+        <col id="2">0</col>
+        <col id="3"/>
       </row>
     </data>
+  </object>
+  <object class="GtkTreeStore" id="treestore_media">
+    <columns>
+      <!-- column-name id -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name type -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="width_request">1000</property>
