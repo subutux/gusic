@@ -50,6 +50,9 @@ class Signals(Signals):
 		(model, pathlist) = tree_selection.get_selected_rows()
 		self.mSelf._playIter(model,model.get_iter(pathlist[0]))
 	def on_treeview_media_view_cursor_changed(self,treeview,user_param=False):
+		print "treeview type:",type(treeview)
+		if type(treeview) is None:
+			return False
 		tree_selection = treeview.get_selection()
 		(model,pathlist) = tree_selection.get_selected_rows()
 		tree_iter = model.get_iter(pathlist[0])

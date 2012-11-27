@@ -29,9 +29,15 @@ def setImageFromUrl(GtkImage,url,scale=None):
 def setImageFromCache(GtkImage,url,cache,scale=None):
 	image = cache.checkImageCache([url],auto_cache=True,quiet=False)[0]
 	if scale is None:
-		pb = GdkPixbuf.Pixbuf.new_from_file(image)
+		try:
+			pb = GdkPixbuf.Pixbuf.new_from_file(image)
+		except:
+			pass
 	else:
-		pb = GdkPixbuf.Pixbuf.new_from_file_at_size(image,scale[0],scale[1])
+		try:
+			pb = GdkPixbuf.Pixbuf.new_from_file_at_size(image,scale[0],scale[1])
+		except:
+			pass
 	GtkImage.set_from_pixbuf(pb)
 	return True
 def iter_prev(iter, model):
