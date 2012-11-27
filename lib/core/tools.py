@@ -35,6 +35,9 @@ def setImageFromCache(GtkImage,url,cache,scale=None):
 	GtkImage.set_from_pixbuf(pb)
 	return True
 def iter_prev(iter, model):
+	'''
+	source: http://faq.pygtk.org/index.py?req=show&file=faq13.051.htp
+	'''
 	path = model.get_path(iter)
 	position = path[-1]
 	if position == 0:
