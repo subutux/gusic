@@ -208,6 +208,7 @@
                 <property name="label" translatable="yes">Previous</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-media-previous</property>
+                <signal name="clicked" handler="on_toolbutton_prev_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -292,6 +293,7 @@
                         <property name="halign">start</property>
                         <property name="justify">fill</property>
                         <property name="single_line_mode">True</property>
+                        <property name="max_width_chars">60</property>
                         <attributes>
                           <attribute name="style" value="normal"/>
                           <attribute name="weight" value="bold"/>
@@ -309,6 +311,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
+                        <property name="max_width_chars">60</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -526,7 +529,7 @@
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext4"/>
                           <attributes>
-                            <attribute name="text">4</attribute>
+                            <attribute name="text">3</attribute>
                           </attributes>
                         </child>
                       </object>

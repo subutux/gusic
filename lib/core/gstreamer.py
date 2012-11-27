@@ -88,7 +88,8 @@ class GStreamer(object):
         return position
     def seek (self, seconds):
         value = int(gst.SECOND * seconds)
-        self.player.seek_simple(gst.FROMAT_TIME,gst.SEEK_FLAG_FLUSH,value)
+        time = gst.Format(gst.FORMAT_TIME)
+        self.player.seek_simple(time,gst.SEEK_FLAG_FLUSH,value)
     def on_message(self,bus,message):
         _type = message.type
         if _type == gst.MESSAGE_EOS:

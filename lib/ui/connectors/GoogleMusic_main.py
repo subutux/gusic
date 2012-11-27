@@ -42,8 +42,14 @@ class Signals(Signals):
 	def on_toolbutton_next_clicked(self,widget):
 		self.mSelf._playNext()
 		return True
+	def on_toolbutton_prev_clicked(self,widget):
+		self.mSelf._playPrev()
+		return True
 	def on_treeview_main_song_view_row_activated(self,one,two,three) :
 		tree_selection = self.mSelf.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
 		self.mSelf._playIter(model,model.get_iter(pathlist[0]))
+	def on_song_progress_change_value(self,widget,scroll,value,user_param=False):
+		self.mSelf.gst.seek(int(value))
+		return True
 

@@ -140,24 +140,38 @@ class Gusic(object):
 				return False
 			self.set_song_title(songTitle)
 			self.set_song_artist(songArtist)
+			self.treeview_main_song_view.set_cursor(model.get_path(tree_iter))
 			play = threading.Thread(target=self.gst.playpause,args=(songUrl,None))
 			play.start()
 			self.obj_song_progress.set_sensitive(True)
 			imgUrl = 'http:' + model.get_value(tree_iter,11)
 			if imgUrl is not 'http:null':
+				# Setting size of album art to 400
+				imgUrl = imgUrl.replace('s130','s400')
 				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.Cache,[50,50])).start()
 				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_art"),imgUrl,self.Cache,[200,200])).start()
 			else:
 				self.mainBuilder.get_object("image_toolbar_art").set_from_file("../../imgs/Gusic_logo-32.png")
 				self.mainBuilder.get_object("image_art").set_from_file("../../imgs/Gusic_logo-128.png")
 			self.start_checkProgress(model,tree_iter)
+	def _playPrev(self):
+		if self.gst.nowplaying is not None and self.gst.status is not self.gst.NULL:
+			if self.gst.status is self.gst.PAUSED or self.gst.status is self.gst.PLAYING:
+				if int(self.obj_song_progress.get_value()) < 3:
+					tree_selection = self.treeview_main_song_view.get_selection()
+					(model, pathlist) = tree_selection.get_selected_rows()
+					tree_iter = model.get_iter(pathlist[0])
+					prev_iter = tools.iter_prev(tree_iter,model)
+					self._playIter(model,prev_iter)
+				else:
+					self.gst.seek(0)
+
 	def _playNext(self):
 		self.gst.playpause(None)
 		tree_selection = self.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
 		tree_iter = model.get_iter(pathlist[0])
 		next_iter = model.iter_next(tree_iter)
-		self.treeview_main_song_view.set_cursor(model.get_path(next_iter))
 		self._playIter(model,next_iter)
 	def Error(self,title,body):
 		dialog = Gtk.MessageDialog(parent=self.main,flags=Gtk.DialogFlags.MODAL,type=Gtk.MessageType.ERROR,buttons=Gtk.ButtonsType.CANCEL,message_format=title)

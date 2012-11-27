@@ -34,4 +34,13 @@ def setImageFromCache(GtkImage,url,cache,scale=None):
 		pb = GdkPixbuf.Pixbuf.new_from_file_at_size(image,scale[0],scale[1])
 	GtkImage.set_from_pixbuf(pb)
 	return True
+def iter_prev(iter, model):
+	path = model.get_path(iter)
+	position = path[-1]
+	if position == 0:
+		return None
+	prev_path = list(path)[:-1]
+	prev_path.append(position - 1)
+	prev = model.get_iter(tuple(prev_path))
+	return prev
 
