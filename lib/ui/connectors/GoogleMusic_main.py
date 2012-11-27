@@ -49,6 +49,17 @@ class Signals(Signals):
 		tree_selection = self.mSelf.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
 		self.mSelf._playIter(model,model.get_iter(pathlist[0]))
+	def on_treeview_media_view_row_cursor_changed(self,treeview,user_param=False):
+		tree_selection : treeview.get_selection()
+		(model,pathlist) = tree_selection.get_selected_rows()
+		#TODO: check what is selected
+		#TODO: - check the type of the row
+		#TODO:  - if row is type of sys-all: set treeview_main_song_view to model liststore_all_songs
+		#TODO:  - if row is type of sys-pl-(user,auto)-gen: check if there is a liststore
+		#TODO:   - if none found: create one (using id in name like liststore_id_songs) and fetch playlist contents
+		#TODO:   - set the model to the playlist liststore
+		#TODO:  - if row is other type: ignore selection
+
 	def on_song_progress_change_value(self,widget,scroll,value,user_param=False):
 		self.mSelf.gst.seek(int(value))
 		return True
