@@ -15,23 +15,6 @@
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import Gtk
-class Playlists(object):
-	def __init__(self):
-		self.playlist_collection = []
-	def addPlaylist(self,p):
-		if type(p) == Playlist:
-			self.playlist_collection.append({p.id:p})
-	def playlistExists(self,Plid):
-		if Plid in self.playlist_collection:
-			return True
-		else:
-			return False
-	def getPlaylist(self,Plid):
-		if self.playlistExists(Plid):
-			return self.playlist_collection[Plid]
-
-
-
 class Playlist(object):
 	def __init__(self,songs,Plid,name):
 		self.songs = songs
@@ -49,6 +32,24 @@ class Playlist(object):
 			if not 'totalTracks' in song:
 				song['totalTracks'] = 0
 			self.store.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
-
-		def getModel(self):
-			return self.model
+	def getModel(self):
+		return self.store
+class Playlists(object):
+	def __init__(self):
+		self.playlist_collection = {}
+	def addPlaylist(self,p):
+		# print type (p)
+		# if type(p) == lib.core.playlists.Playlist:
+		print "adding Playlist with id",p.id
+		self.playlist_collection[p.id]=p
+	def playlistExists(self,Plid):
+		print "got playlists:",self.playlist_collection
+		if Plid in self.playlist_collection:
+			print "got",Plid
+			return True
+		else:
+			return False
+	def getPlaylist(self,Plid):
+		if self.playlistExists(Plid):
+			print self.playlist_collection
+			return self.playlist_collection[Plid]

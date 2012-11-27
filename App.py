@@ -121,6 +121,7 @@ class Gusic(object):
 			else:
 				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'sys-pl-user-gen'])
 		self.treeview_media_view.set_model(self.treestore_media)
+		self.treeview_media_view.expand_all()
 		return True
 	def viewPlaylist(self,Plid,name):
 		if self.Playlists.playlistExists(Plid):
