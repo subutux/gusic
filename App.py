@@ -102,8 +102,6 @@ class Gusic(object):
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
 	def fetchPlaylistLibrary(self):
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
-		
-		print self.Library['playlists']
 		parent_media = self.treestore_media.append(None,['sys-all','All Media','sys'])
 		parent_playlists = self.treestore_media.append(parent_media,['sys-pl','Playlists','sys'])
 		parent_auto_pl = self.treestore_media.append(parent_playlists,['sys-pl-auto','Auto playlists','sys'])
@@ -115,7 +113,11 @@ class Gusic(object):
 			else:
 				self.treestore_media.append(parent_auto_pl,[self.Library['playlists']['auto'][pl],pl,'gen'])
 		for pl in self.Library['playlists']['user'].keys():
-			self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'gen'])
+			if type(self.Library['playlists']['user'][pl]) is list:
+				for pl_ in self.Library['playlists']['user'][pl]:
+					self.treestore_media.append(parent_user_pl,[pl_,pl,'gen'])
+			else:
+				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'gen'])
 		self.treeview_media_view.set_model(self.treestore_media)
 		return True
 	def set_song_title(self,title):
