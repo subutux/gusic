@@ -28,6 +28,7 @@ from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
 from lib.core.cache import Cache
 from lib.core import tools
+from lib.core.playlists import Playlists, Playlist
 from gmusicapi.api import Api as gMusicApi
 import threading
 import gst
@@ -48,6 +49,7 @@ class Gusic(object):
 		self.obj_song_progress = self.mainBuilder.get_object('song_progress')
 		self.label_song_time = self.mainBuilder.get_object('label_song_time')
 		self.toolbutton_play = self.mainBuilder.get_object('toolbutton_play')
+		self.Playlists = Playlists()
 		self.Bus = Bus()
 		self.Bus.registerEvent("on-start-playing")
 		self.Bus.registerEvent("on-pause")
