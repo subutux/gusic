@@ -49,9 +49,20 @@ class Signals(Signals):
 		tree_selection = self.mSelf.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
 		self.mSelf._playIter(model,model.get_iter(pathlist[0]))
-	def on_treeview_media_view_row_cursor_changed(self,treeview,user_param=False):
-		tree_selection : treeview.get_selection()
+	def on_treeview_media_view_cursor_changed(self,treeview,user_param=False):
+		tree_selection = treeview.get_selection()
 		(model,pathlist) = tree_selection.get_selected_rows()
+		tree_iter = model.get_iter(pathlist[0])
+		rowType = model.get_value(tree_iter,2)
+		if rowType == 'sys-all':
+			self.mSelf.treeview_main_song_view.set_model(self.mSelf.liststore_all_songs)
+		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen":
+			ShowPl = threading.Thread(target=self.mSelf.viewPlaylist,args=(model.get_value(tree_iter,0),model.get_value(tree_iter,1)))
+			ShowPl.start()
+			while ShowPl.isAlive():
+				while Gtk.events_pending():
+					Gtk.main_iteration()
+
 		#TODO: check what is selected
 		#TODO: - check the type of the row
 		#TODO:  - if row is type of sys-all: set treeview_main_song_view to model liststore_all_songs

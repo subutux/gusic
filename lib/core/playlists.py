@@ -24,9 +24,11 @@ class Playlists(object):
 	def playlistExists(self,Plid):
 		if Plid in self.playlist_collection:
 			return True
-	def getPlaylistModel(self,Plid):
+		else:
+			return False
+	def getPlaylist(self,Plid):
 		if self.playlistExists(Plid):
-			return self.playlist_collection[Plid].getModel()
+			return self.playlist_collection[Plid]
 
 
 
@@ -39,8 +41,7 @@ class Playlist(object):
 		for song in self.songs:
 			if not 'albumArtUrl' in song:
 				song['albumArtUrl'] = 'null'
-			else:
-				albumArtUrls.append('http:' + song['albumArtUrl'])
+			
 			if not 'disc' in song:
 				song['disc'] = 0
 			if not 'track' in song:

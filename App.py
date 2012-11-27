@@ -122,6 +122,14 @@ class Gusic(object):
 				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'sys-pl-user-gen'])
 		self.treeview_media_view.set_model(self.treestore_media)
 		return True
+	def viewPlaylist(self,Plid,name):
+		if self.Playlists.playlistExists(Plid):
+			self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
+		else:
+			playlist = Playlist(self.api.get_playlist_songs(Plid),Plid,name)
+			self.Playlists.addPlaylist(playlist)
+			self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
+		return True
 	def set_song_title(self,title):
 		label = self.mainBuilder.get_object("label_song_title")
 		label.set_text(title)
