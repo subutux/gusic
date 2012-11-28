@@ -15,6 +15,7 @@
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import Gtk
+import logging
 class Playlist(object):
 	def __init__(self,songs,Plid,name):
 		self.songs = songs
@@ -44,7 +45,7 @@ class Playlists(object):
 		self.playlist_collection[p.id]=p
 	def playlistExists(self,Plid):
 		if Plid in self.playlist_collection:
-			logging.info('got playlist', Plid)
+			logging.info('got playlist %s', Plid)
 			return True
 		else:
 			return False
