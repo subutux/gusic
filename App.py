@@ -36,7 +36,7 @@ import gst
 import time
 class Gusic(object):
 	def __init__(self):
-		logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(funcName)s}:%(message)s')
+		logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 		logging.debug("loading main window builder")
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')

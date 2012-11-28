@@ -16,6 +16,7 @@
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 import os
 import urllib2
+import logging
 class Cache(object):
 	def __init__(self):
 		self.cacheLocation = os.environ['HOME'] + '/.local/share/gusic/cache'
@@ -25,11 +26,19 @@ class Cache(object):
 		if not os.path.isdir(self.cacheImages):
 			os.makedirs(self.cacheImages)
 	def checkImageCache(self,cacheURLs,auto_cache=True,quiet=True):
+		logging.debug("starting with auto_cache=%s and quiet=%s",str(auto_cache),str(quiet))
 		cache = []
 		for url in cacheURLs:
-			fname = url.rsplit('/',1)[1]
+			logging.debug("starting url <%s>",url)
+			try:
+				fname = url.rsplit('/',1)[1]
+			except:
+				logging.exception()
+			
 			if not os.path.isfile(self.cacheImages + '/' + fname):
+				logging.debug("file %s is not cached",fname)
 				if auto_cache:
+					logging.debug('downloading <%s> to %s',url,fname)
 					ul = urllib2.urlopen(url)
 					open(self.cacheImages + '/' + fname,'w').write(ul.read())
 			if not quiet:

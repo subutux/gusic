@@ -40,12 +40,11 @@ class Playlists(object):
 	def addPlaylist(self,p):
 		# print type (p)
 		# if type(p) == lib.core.playlists.Playlist:
-		print "adding Playlist with id",p.id
+		logging.info('adding playlist with id %s',p.id)
 		self.playlist_collection[p.id]=p
 	def playlistExists(self,Plid):
-		print "got playlists:",self.playlist_collection
 		if Plid in self.playlist_collection:
-			print "got",Plid
+			logging.info('got playlist', Plid)
 			return True
 		else:
 			return False

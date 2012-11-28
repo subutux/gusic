@@ -14,14 +14,18 @@
 # along with google-music.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
+import logging
 class Bus(object):
 	def __init__(self):
 		self.events = {}
 	def registerEvent(self,event):
+		logging.debug("registering event %s",event)
 		self.events[event] = [];
 	def connect(self,event,function):
+		logging.debug("connecting %s to event %s",function.__name__,event)
 		self.events[event].append(function)
 	def emit(self,event):
+		logging.debug("emitting event %s",event)
 		if self.events is not []:
 			for function in self.events[event]:
 				function()
