@@ -17,10 +17,68 @@
 import os
 import urllib2
 import logging
+import sqlite3
+
+class DB(object):
+	def __init__(self,dbfile):
+		self.dbfile = dbfile
+		self.db = sqlite3.connect(dbfile)
+		self.c = self.db.cursor()
+	def cleanDB(self):
+		logging.info('closing DB')
+		self.db.close()
+		try:
+			os.remove(self.dbfile)
+		except:
+			logging.exeception('Exception while removing dbfile: %s',self.dbfile)
+			return False
+		self.db = sqlite3.connect(self.dbfile)
+		self.c = self.db.cursor()
+		self._initDB()
+	def _initDB(self):
+		logging.info("Initializing database %s: TABLE settings",self.dbfile)
+		self.c.execute('''CREATE TABLE settings 
+			(id,setting,value)''')
+		logging.info("Initializing database %s: TABLE all_songs",self.dbfile)
+		self.c.execute('''CREATE TABLE all_songs
+			(id,comment,rating,lastPlayed,disc,composer,year,album,title,
+				deleted,albumArtist,type,titleNom,track,albumArtistNorm,totalTracks,
+				beatsPerMinute,genre,playCount,creationDate,name,albumNorm,artist,
+				url,totalDiscs,durationMilis,artistNorm,subjectToCuration,matchedId,
+				albumArtUrl)''')
+	def convertForSqlite(songs):
+		output = []
+		for song in songs:
+			if not albumArt in s:
+				song['albumArt'] = 'null'
+			if not 'disc' in song:
+				song['disc'] = 0
+			if not 'track' in song:
+				song['track'] = 0
+			if not 'totalTracks' in song:
+				song['totalTracks'] = 0
+			s = tuple(song['id'],song['comment'],song['rating'],song['lastPlayed'],song['disc'],song['composer'],
+				song['year'],song['album'],song['title'],song['deleted'],song['albumArtist'],song['type'],
+				song['titleNom'],song['track'],song['albumArtistNorm'],song['totalTracks'],song['beatsPerMinute'],
+				song['genre'],song['playCount'],song['creationDate'],song['name'],song['albumNorm'],song['artist'],
+				song['url'],song['totalDiscs'],song['durationMilis'],song['artistNorm'],song['subjectToCuration'],
+				song['matchedId'],song['albumArtUrl'])
+			output.append(s)
+		return output
+	def saveAllSongs(self,songs):
+		try:
+			self.c.executemany("INSERT INTO all_songs VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",self.convertForSqlite(songs))
+		except sqlite3.Error:
+			logging.exception("Exception while importing all songs:")
+			return False
+		else:
+			return True
 class Cache(object):
 	def __init__(self):
 		self.cacheLocation = os.environ['HOME'] + '/.local/share/gusic/cache'
 		self.cacheImages = self.cacheLocation + '/images'
+		self.cacheDatabase = self.cacheLocation + '/gusic.cache.db'
+
 		if not os.path.isdir(self.cacheLocation):
 			os.makedirs(self.cacheLocation)
 		if not os.path.isdir(self.cacheImages):
