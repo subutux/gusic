@@ -20,7 +20,6 @@ from gi.repository import Gdk
 from gi.repository import GLib
 import gobject
 gobject.threads_init()
-
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
