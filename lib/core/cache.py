@@ -33,7 +33,8 @@ class Cache(object):
 			try:
 				fname = url.rsplit('/',1)[1]
 			except:
-				logging.exception()
+				logging.exception("Exception while splitting url %s",url)
+				return False
 			
 			if not os.path.isfile(self.cacheImages + '/' + fname):
 				logging.debug("file %s is not cached",fname)

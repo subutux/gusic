@@ -97,6 +97,8 @@ class Gusic(object):
 		self.Library['songs'] = self.api.get_all_songs()
 		self.liststore_all_songs = self.mainBuilder.get_object('liststore_all_songs')
 		self.treeview_main_song_view = self.mainBuilder.get_object('treeview_main_song_view')
+		logging.info('removing model from treeview_main_song_view')
+		self.treeview_main_song_view.set_model(None)
 		songAdd = 0
 		albumArtUrls = []
 		logging.info('storing song info into self.liststore_all_songs')
@@ -114,6 +116,7 @@ class Gusic(object):
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
 		logging.info('setting treeview_main_song_view model to self.liststore_all_songs')
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
+		self.treeview_main_song_view.set_cursor(0)
 	def fetchPlaylistLibrary(self):
 		logging.info('fetching all playlists')
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
@@ -142,6 +145,7 @@ class Gusic(object):
 		logging.info('setting treeview_media_view model to self.treestore_media')
 		self.treeview_media_view.set_model(self.treestore_media)
 		self.treeview_media_view.expand_all()
+		self.treeview_media_view.set_cursor(0)
 		return True
 	def viewPlaylist(self,Plid,name):
 		logging.info('request for %s with id %s',name,Plid)
@@ -197,7 +201,7 @@ class Gusic(object):
 			 	songUrl = self.api.get_stream_url(songId)
 			 	logging.info('streaming url: <%s>',songUrl)
 			except urllib2.HTTPError:
-				logging.exception()
+				logging.exception("Exception while retreaving stream url")
 				self.Error(title="Error retrieving stream",body="Gusic was unable to retrieve the streaming url. This likely means that you've exceeded your streaming limit. (Ouch!)")
 				return False
 			self.set_song_title(songTitle)
@@ -209,14 +213,14 @@ class Gusic(object):
 			self.obj_song_progress.set_sensitive(True)
 			imgUrl = 'http:' + model.get_value(tree_iter,11)
 			logging.debug('album art url: <%s>',imgUrl)
-			if imgUrl is not 'http:null':
+			if imgUrl != 'http:null':
 				# Setting size of album art to 400
 				imgUrl = imgUrl.replace('s130','s400')
 				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.Cache,[50,50])).start()
 				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_art"),imgUrl,self.Cache,[200,200])).start()
 			else:
-				self.mainBuilder.get_object("image_toolbar_art").set_from_file("../../imgs/Gusic_logo-32.png")
-				self.mainBuilder.get_object("image_art").set_from_file("../../imgs/Gusic_logo-128.png")
+				self.mainBuilder.get_object("image_toolbar_art").set_from_file("imgs/Gusic_logo-32.png")
+				self.mainBuilder.get_object("image_art").set_from_file("imgs/Gusic_logo-128.png")
 			self.start_checkProgress(model,tree_iter)
 	def _playPrev(self):
 		if self.gst.nowplaying is not None and self.gst.status is not self.gst.NULL:
