@@ -23,3 +23,14 @@ v 0.1
 v 0.2
 -----
 - caching!
+-- To clarify:
+Caching would be done using a SqLite back-end. The library is first loaded in an sqlite database.
+when this is done, the liststore will contain the database contents.
+
+now here comes the hard part: Create a wrapper class for a ListStore and a sqlite database.
+when i insert a row, insert it into the ListStore and SqLite database. When I update one, update
+the ListStore and SqLite. When I remove a row, remove it from the ListStore and SqLite database.
+
+Sorting will be a bit harder. Since the default sorting function in ListStores are slow, the class
+must be able to sort using the sqlite database, empties the ListStore and puts the sorted content
+back into the liststore. Needs speed testing.
