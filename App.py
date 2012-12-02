@@ -115,6 +115,9 @@ class Gusic(object):
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
 		logging.info('setting treeview_main_song_view model to self.liststore_all_songs')
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
+		self.mainBuilder.get_object('treeviewcolumn_title').set_sort_column_id(1)
+		self.mainBuilder.get_object('treeviewcolumn_artist').set_sort_column_id(4)
+		self.mainBuilder.get_object('treeviewcolumn_album').set_sort_column_id(3)
 		self.treeview_main_song_view.set_cursor(0)
 	def fetchPlaylistLibrary(self):
 		logging.info('fetching all playlists')
