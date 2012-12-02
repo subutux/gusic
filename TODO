@@ -30,7 +30,11 @@ when this is done, the liststore will contain the database contents.
 now here comes the hard part: Create a wrapper class for a ListStore and a sqlite database.
 when i insert a row, insert it into the ListStore and SqLite database. When I update one, update
 the ListStore and SqLite. When I remove a row, remove it from the ListStore and SqLite database.
+UPDATE: the simplelest method will be creating a 'glue' class between the sql database and a liststore.
+Adding and removing calls will be signalled to this class who removes the row/adds the row in the
+liststore and sqlite table.
+
 
 Sorting will be a bit harder. Since the default sorting function in ListStores are slow, the class
 must be able to sort using the sqlite database, empties the ListStore and puts the sorted content
-back into the liststore. Needs speed testing.
+back into the liststore. Needs speed testing. UPDATE: scratch that. the default sorting works fine.
