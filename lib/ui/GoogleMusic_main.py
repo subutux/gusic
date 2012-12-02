@@ -25,7 +25,6 @@ def Build(mainClass=None,connector=None):
 		b =  Gtk.Builder()
 		b.add_from_file(whoami + '.glade')
 		if connector == None:
-			
 			s = importlib.import_module('lib.ui.connectors.' + os.path.basename(whoami))
 			if mainClass != None:
 				b.connect_signals(s.Signals(mainClass))
