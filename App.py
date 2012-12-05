@@ -20,6 +20,8 @@ from gi.repository import Gdk
 from gi.repository import GLib
 import gobject
 gobject.threads_init()
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.KeyRing import keyring
