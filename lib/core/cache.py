@@ -19,11 +19,21 @@ import urllib2
 import logging
 import sqlite3
 
+class DBTableTypes(object):
+
+
 class DB(object):
 	def __init__(self,dbfile):
 		self.dbfile = dbfile
 		self.db = sqlite3.connect(dbfile)
 		self.c = self.db.cursor()
+		self.tableTypes = {
+		"playlist": """CREATE TABLE ? (id,comment,rating,lastPlayed,disc,composer,year,album,title,
+				deleted,albumArtist,type,titleNom,track,albumArtistNorm,totalTracks,
+				beatsPerMinute,genre,playCount,creationDate,name,albumNorm,artist,
+				url,totalDiscs,durationMilis,artistNorm,subjectToCuration,matchedId,
+				albumArtUrl)"""
+		}
 	def cleanDB(self):
 		logging.info('closing DB')
 		self.db.close()
@@ -73,6 +83,20 @@ class DB(object):
 			return False
 		else:
 			return True
+	def _tableExtist(self,table):
+		ret = self.c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?;",table)
+		result = ret.fetchone()
+		if result[0] = 1:
+			return True
+		else:
+			return False
+	def createNew(tableType,table):
+		if tableType in self.tableTypes:
+			self.c.execute(self.tableTypes['tableType'],table)
+		else:
+			return False
+		return True
+
 class Cache(object):
 	def __init__(self):
 		self.cacheLocation = os.environ['HOME'] + '/.local/share/gusic/cache'
