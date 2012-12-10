@@ -15,3 +15,20 @@
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com
 from gi.repository import Gtk
+from cache import DB
+import sqlite3
+class sqliteListstore(object):
+	def __init__(self,listStore,dbFile,table,tabelType):
+		self.listStore = listStore
+		self.db = DB(dbFile)
+		self.table = table
+		self.type = tableType
+		if not self.db._tableExists(self.table):
+			self.db.createNew(self.type,self.table)
+	def insert(self,dictValues):
+		return True
+	def update(self,treePath,dictValues):
+		return True
+	def remove(self,treePath):
+		return True
+
