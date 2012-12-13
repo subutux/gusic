@@ -18,17 +18,34 @@ from gi.repository import Gtk
 from cache import DB
 import sqlite3
 class sqliteListstore(object):
-	def __init__(self,listStore,dbFile,table,tabelType):
-		self.listStore = listStore
+	def __init__(self,dbFile,name,tabelType):
+		self.listStore = Gtk.ListStore(self.db.getListStoreCols(tableType))
 		self.db = DB(dbFile)
-		self.table = table
 		self.type = tableType
+		self.table = tableType + '_' + name
 		if not self.db._tableExists(self.table):
 			self.db.createNew(self.type,self.table)
+		else:
+			#Fill the liststore with the table values
+			for row in self.db.c.execute("SELECT ? from ?",", ".join(self.db.getListStoreTableMap(self.tableType)),self.table):
+				self.listStore.append(list(row))
+
 	def insert(self,dictValues):
+		#This shoud work, not tested
+		tableMap = self.db.getListStoreTableMap(self.tableType)
+		for item in dictValues:
+			v = []
+			for mapper in tableMap:
+				v.append(item[mapper])
+			self.db.c.execute("INSERT INTO ? VALUES (?)",self.tableType,item)
+			self.listStore.append(v)
+
 		return True
 	def update(self,treePath,dictValues):
+		
 		return True
 	def remove(self,treePath):
 		return True
+	def getListstore(self):
+		return self.listStore
 

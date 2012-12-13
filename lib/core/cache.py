@@ -31,6 +31,12 @@ class DB(object):
 				url,totalDiscs,durationMilis,artistNorm,subjectToCuration,matchedId,
 				albumArtUrl)"""
 		}
+		self.listStoreTypes = {
+		"playlist" : (int,str,str,str,str,str,int,int,int,str,str,str,int)
+		}
+		self.listStoreTableMaps = {
+		"playlist": ["type","title","lastPlayed","album","albumArtist","id","disc","track","totalTracks","genre","url","albumArtUrl","durationMilis"]
+		}
 	def cleanDB(self):
 		logging.info('closing DB')
 		self.db.close()
@@ -89,10 +95,16 @@ class DB(object):
 			return False
 	def createNew(tableType,table):
 		if tableType in self.tableTypes:
-			self.c.execute(self.tableTypes['tableType'],table)
+			self.c.execute(self.tableTypes[tableType],tableType + '_' + table)
 		else:
 			return False
 		return True
+	def getListStoreCols(self,tableType):
+		if tableType in self.listStoreTypes:
+			return self.listStoreTypes[tableType]
+	def getListStoreTableMap(self,tableType):
+		if tableType in self.listStoreTableMaps:
+			return self.listStoreTableMaps[tableType]
 
 class Cache(object):
 	def __init__(self):
