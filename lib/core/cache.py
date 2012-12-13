@@ -19,9 +19,6 @@ import urllib2
 import logging
 import sqlite3
 
-class DBTableTypes(object):
-
-
 class DB(object):
 	def __init__(self,dbfile):
 		self.dbfile = dbfile
@@ -86,7 +83,7 @@ class DB(object):
 	def _tableExtist(self,table):
 		ret = self.c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?;",table)
 		result = ret.fetchone()
-		if result[0] = 1:
+		if result[0] == 1:
 			return True
 		else:
 			return False

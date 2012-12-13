@@ -54,6 +54,7 @@ class Gusic(object):
 		self.obj_song_progress = self.mainBuilder.get_object('song_progress')
 		self.label_song_time = self.mainBuilder.get_object('label_song_time')
 		self.toolbutton_play = self.mainBuilder.get_object('toolbutton_play')
+		self.image_playpause = self.mainBuilder.get_object('image_playpause')
 		self.Playlists = Playlists()
 		logging.debug('Registering Bus events')
 		self.Bus = Bus()
@@ -178,20 +179,20 @@ class Gusic(object):
 		gobject.timeout_add(250,self._checkProgress)
 	def _checkProgress(self):
 		if self.gst.nowplaying is not None and self.gst.status is self.gst.PLAYING:
-			if self.toolbutton_play.get_property("stock-id") != "gtk-media-pause":
+			if self.image_playpause.get_stock() != ("gtk-media-pause",6):
 				self.Bus.emit('on-start-playing')
-				self.toolbutton_play.set_property("stock-id","gtk-media-pause")
+				self.image_playpause.set_from_stock("gtk-media-pause",6)
 			position = self.gst.getposition() / gst.SECOND
 			self.obj_song_progress.set_value(position)
 			pretty_position = str(position / 60) + ":" + "%.2d" % (position % 60)
 			self.label_song_time.set_text(pretty_position)
 			return True
 		elif self.gst.nowplaying is not None and self.gst.status is self.gst.PAUSED:
-			if self.toolbutton_play.get_property("stock-id") != "gtk-media-play":
+			if self.image_playpause.get_stock() != ("gtk-media-play",6):
 				self.Bus.emit('on-pause')
-				self.toolbutton_play.set_property("stock-id","gtk-media-play")
+				self.image_playpause.set_from_stock("gtk-media-play",6)
 		elif self.gst.status is self.gst.NULL:
-			self.toolbutton_play.set_property("stock-id","gtk-media-play")
+			self.image_playpause.set_from_stock("gtk-media-play",6)
 			self.Bus.emit("on-song-ended")
 			self.obj_song_progress.set_value(0)
 			self.label_song_time.set_text("00:00")

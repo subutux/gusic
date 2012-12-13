@@ -22,7 +22,7 @@ import logging
 import urllib2
 
 class Signals(Signals):
-	def on_toolbutton_play_clicked(self,widget):
+	def on_button_play_clicked(self,widget):
 		if self.mSelf.gst.nowplaying == None:
 			self.on_treeview_main_song_view_row_activated(None,None,None)
 
@@ -40,10 +40,10 @@ class Signals(Signals):
 		else:
 			paned.set_property('visible',True)
 		return True
-	def on_toolbutton_next_clicked(self,widget):
+	def on_button_next_clicked(self,widget):
 		self.mSelf._playNext()
 		return True
-	def on_toolbutton_prev_clicked(self,widget):
+	def on_button_prev_clicked(self,widget):
 		self.mSelf._playPrev()
 		return True
 	def on_treeview_main_song_view_row_activated(self,one,two,three) :
