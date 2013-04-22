@@ -30,7 +30,7 @@ from lib.core.bus import Bus
 from lib.core.cache import Cache
 from lib.core import tools
 from lib.core.playlists import Playlists, Playlist
-from gmusicapi.api import Api as gMusicApi
+from gmusicapi import Webclient as gMusicApi
 import threading
 import logging
 import gst
