@@ -1,0 +1,6 @@
+* {
+	-GtkPaned-handle-size: 0;
+}
+GtkPaned {
+	border-radius: 4;
+}

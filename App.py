@@ -40,6 +40,11 @@ class Gusic(object):
 	def __init__(self):
 		logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 		logging.debug("loading main window builder")
+		self.GtkScreen = Gdk.Screen.get_default()
+		self.context = Gtk.StyleContext()
+		self.css_provider = Gtk.CssProvider()
+		self.css_provider.load_from_path('lib/core/styles.css')
+		self.context.add_provider_for_screen(self.GtkScreen,self.css_provider,Gtk.STYLE_PROVIDER_PRIORITY_USER)
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
 		self.aboutBuilder = GoogleMusic_about.Build(self,None)
@@ -57,6 +62,7 @@ class Gusic(object):
 		self.label_song_time = self.mainBuilder.get_object('label_song_time')
 		self.toolbutton_play = self.mainBuilder.get_object('toolbutton_play')
 		self.image_playpause = self.mainBuilder.get_object('image_playpause')
+
 		self.Playlists = Playlists()
 		logging.debug('Registering Bus events')
 		self.Bus = Bus()
@@ -85,7 +91,7 @@ class Gusic(object):
 			self.loginBuilder = GoogleMusic_dialog_login.Build(self,None)
 			self.loginDialog = self.loginBuilder.get_object('window_login')
 			self.image_logo = self.loginBuilder.get_object('image_logo')
-			self.image_logo.set_from_file('imgs/Gusic_logo.svg')
+			self.image_logo.set_from_file('imgs/Gusic_logo-256.png')
 			self.loginDialog.show_all()
 
 	def startGusic(self,fromLogin=False):
