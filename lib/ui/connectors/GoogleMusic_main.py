@@ -66,10 +66,12 @@ class Signals(Signals):
 			return False
 
 		tree_iter = model.get_iter(pathlist[0])
+		logging.debug("treeview pathlist: %s", str(pathlist))
 		rowType = model.get_value(tree_iter,2)
+		logging.debug("rowType: %s",rowType)
 		if rowType == 'sys-all':
 			self.mSelf.treeview_main_song_view.set_model(self.mSelf.liststore_all_songs)
-		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen":
+		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen" or rowType == "gen":
 			ShowPl = threading.Thread(target=self.mSelf.viewPlaylist,args=(model.get_value(tree_iter,0),model.get_value(tree_iter,1)))
 			ShowPl.start()
 			while ShowPl.isAlive():

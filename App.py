@@ -41,10 +41,8 @@ class Gusic(object):
 		logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 		logging.debug("loading main window builder")
 		self.GtkScreen = Gdk.Screen.get_default()
-		self.context = Gtk.StyleContext()
-		self.css_provider = Gtk.CssProvider()
-		self.css_provider.load_from_path('lib/core/styles.css')
-		self.context.add_provider_for_screen(self.GtkScreen,self.css_provider,Gtk.STYLE_PROVIDER_PRIORITY_USER)
+		
+		
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
 		self.aboutBuilder = GoogleMusic_about.Build(self,None)
@@ -78,8 +76,11 @@ class Gusic(object):
 		self.treeview_media_view.set_cursor(0)
 		self.liststore_media = self.mainBuilder.get_object('liststore_media')
 		self.treestore_media = self.mainBuilder.get_object('treestore_media')
-		#TODO: set Style properties
-		#self.mainBuilder.get_object("paned1").set_property('handle-size',1)
+		#TODO: set Style properties (DONE)
+		self.style_context = Gtk.StyleContext()
+		self.css_provider = Gtk.CssProvider()
+		self.css_provider.load_from_path('lib/core/styles.css')
+		self.style_context.add_provider_for_screen(self.GtkScreen,self.css_provider,Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
 
 		if self.keyring.haveLoginDetails():
@@ -130,11 +131,19 @@ class Gusic(object):
 		self.mainBuilder.get_object('treeviewcolumn_artist').set_sort_column_id(4)
 		self.mainBuilder.get_object('treeviewcolumn_album').set_sort_column_id(3)
 		self.treeview_main_song_view.set_cursor(0)
+
+		self.searchField = self.mainBuilder.get_object('entry_search_field')
+		self.searchCompletion = Gtk.EntryCompletion()
+		self.searchCompletion.set_model(self.liststore_all_songs)
+		#TODO: Multi column completion (songs, albums and artists)
+		self.searchCompletion.set_text_column(1)
+		self.searchField.set_completion(self.searchCompletion)
 	def fetchPlaylistLibrary(self):
 		logging.info('fetching all playlists')
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
 		logging.info('setting main tree items')
 		parent_media = self.treestore_media.append(None,['sys-all','All Media','sys-all'])
+		parent_searches = self.treestore_media.append(parent_media,['self-gen-pl','Searches','self-gen-pl'])
 		parent_playlists = self.treestore_media.append(parent_media,['sys-pl','Playlists','sys'])
 		parent_auto_pl = self.treestore_media.append(parent_playlists,['sys-pl-auto','Auto playlists','sys-pl-auto'])
 		parent_user_pl = self.treestore_media.append(parent_playlists,['sys-pl-user','Your playlists','sys-pl-user'])
