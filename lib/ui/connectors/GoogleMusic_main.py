@@ -40,6 +40,11 @@ class Signals(Signals):
 		else:
 			paned.set_property('visible',True)
 		return True
+	def on_menuitem_about_activate(self,widget):
+		self.dialogAbout = self.mSelf.aboutBuilder.get_object('aboutdialog1').run()
+		if self.dialogAbout == Gtk.ResponseType.DELETE_EVENT or self.dialogAbout == Gtk.ResponseType.CANCEL:
+			self.mSelf.aboutBuilder.get_object('aboutdialog1').hide()
+		return True
 	def on_button_next_clicked(self,widget):
 		self.mSelf._playNext()
 		return True

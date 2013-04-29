@@ -24,6 +24,7 @@ import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
+from lib.ui import GoogleMusic_about
 from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
@@ -41,6 +42,7 @@ class Gusic(object):
 		logging.debug("loading main window builder")
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
+		self.aboutBuilder = GoogleMusic_about.Build(self,None)
 		self.keyring = keyring()
 		self.api = gMusicApi()
 		self.song = {
