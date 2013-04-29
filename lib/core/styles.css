@@ -2,5 +2,5 @@
 	-GtkPaned-handle-size: 0;
 }
 GtkPaned {
-	border-radius: 4;
+	border-radius: 4px;
 }
