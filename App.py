@@ -141,7 +141,7 @@ class Gusic(object):
 		self.searchField = self.mainBuilder.get_object('entry_search_field')
 		Completion = Gtk.EntryCompletion()
 		Completion.set_model(self.searchCompletion.get_matchStore())
-		#TODO: Multi column completion (songs, albums and artists)
+		#TODO: Multi column completion (songs, albums and artists) [DONE]
 		Completion.set_text_column(1)
 		cell = Gtk.CellRendererText()
 		Completion.pack_end(cell,True)
@@ -153,12 +153,12 @@ class Gusic(object):
 		logging.info('fetching all playlists')
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
 		logging.info('setting main tree items')
-		parent_media = self.treestore_media.append(None,['sys-all','All Media','sys-all'])
-		parent_searches = self.treestore_media.append(parent_media,['self-gen-pl','Searches','self-gen-pl'])
+		parent_media = self.treestore_media.append(None,['sys-all','All Media','sys-all',900])
+		parent_searches = self.treestore_media.append(parent_media,['self-gen-pl','Searches','self-gen-pl',700])
 		self.search_playlists = parent_searches
-		parent_playlists = self.treestore_media.append(parent_media,['sys-pl','Playlists','sys'])
-		parent_auto_pl = self.treestore_media.append(parent_playlists,['sys-pl-auto','Auto playlists','sys-pl-auto'])
-		parent_user_pl = self.treestore_media.append(parent_playlists,['sys-pl-user','Your playlists','sys-pl-user'])
+		parent_playlists = self.treestore_media.append(parent_media,['sys-pl','Playlists','sys',700])
+		parent_auto_pl = self.treestore_media.append(parent_playlists,['sys-pl-auto','Auto playlists','sys-pl-auto',500])
+		parent_user_pl = self.treestore_media.append(parent_playlists,['sys-pl-user','Your playlists','sys-pl-user',500])
 		logging.info('setting dynamic fetched playlists')
 		for pl in self.Library['playlists']['auto'].keys():
 			if type(self.Library['playlists']['auto'][pl]) is list:
@@ -167,15 +167,15 @@ class Gusic(object):
 					self.treestore_media.append(parent_auto_pl,[pl,pl_,'gen'])
 			else:
 				logging.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['auto'][pl])
-				self.treestore_media.append(parent_auto_pl,[self.Library['playlists']['auto'][pl],pl,'sys-pl-auto-gen'])
+				self.treestore_media.append(parent_auto_pl,[self.Library['playlists']['auto'][pl],pl,'sys-pl-auto-gen',400])
 		for pl in self.Library['playlists']['user'].keys():
 			if type(self.Library['playlists']['user'][pl]) is list:
 				for pl_ in self.Library['playlists']['user'][pl]:
 					logging.debug('appending user-playlist:%s id: %s',pl,pl_)
-					self.treestore_media.append(parent_user_pl,[pl_,pl,'gen'])
+					self.treestore_media.append(parent_user_pl,[pl_,pl,'gen',500])
 			else:
 				logging.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['user'][pl])
-				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'sys-pl-user-gen'])
+				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'sys-pl-user-gen',400])
 		logging.info('setting treeview_media_view model to self.treestore_media')
 		self.treeview_media_view.set_model(self.treestore_media)
 		self.treeview_media_view.expand_all()
@@ -216,7 +216,7 @@ class Gusic(object):
 				item = self.liststore_all_songs.iter_next(item)
 			playlist = Playlist(song_list,"search-" + model[tree_iter][1],model[tree_iter][1])
 			self.Playlists.addPlaylist(playlist)
-			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search'])
+			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search',400])
 			self.treeview_media_view.expand_all()
 			media_selection = self.treeview_media_view.get_selection()
 			media_selection.select_iter(media_iter)
@@ -234,7 +234,41 @@ class Gusic(object):
 				item = self.liststore_all_songs.iter_next(item)
 			playlist = Playlist(song_list,"search-" + model[tree_iter][1],model[tree_iter][1])
 			self.Playlists.addPlaylist(playlist)
-			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search'])
+			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search',400])
+			self.treeview_media_view.expand_all()
+			media_selection = self.treeview_media_view.get_selection()
+			media_selection.select_iter(media_iter)
+			self.load_playlist_into_main_view(self.treeview_media_view)
+	def search_all(self,text):
+			song_list = []
+			id_list = []
+			item = self.liststore_all_songs.get_iter_first()
+			while (item != None):
+				# Title
+				if text.lower() in self.liststore_all_songs.get_value(item,1).lower():
+					for song in self.Library['songs']:
+						if song['id'] == self.liststore_all_songs.get_value(item,5) and song['id'] not in id_list:
+							song_list.append(song)
+							id_list.append(song['id'])
+
+				# Album
+				if text.lower() in self.liststore_all_songs.get_value(item,3).lower():
+					for song in self.Library['songs']:
+						if song['id'] == self.liststore_all_songs.get_value(item,5) and song['id'] not in id_list:
+							song_list.append(song)
+							id_list.append(song['id'])
+
+				# Artist
+				if text.lower() in self.liststore_all_songs.get_value(item,4).lower():
+					for song in self.Library['songs']:
+						if song['id'] == self.liststore_all_songs.get_value(item,5) and song['id'] not in id_list:
+							song_list.append(song)
+							id_list.append(song['id'])
+
+				item = self.liststore_all_songs.iter_next(item)
+			playlist = Playlist(song_list,"search-" + text,text)
+			self.Playlists.addPlaylist(playlist)
+			media_iter = self.treestore_media.append(self.search_playlists,["search-" + text,text,'search',400])
 			self.treeview_media_view.expand_all()
 			media_selection = self.treeview_media_view.get_selection()
 			media_selection.select_iter(media_iter)
@@ -278,10 +312,6 @@ class Gusic(object):
 			while ShowPl.isAlive():
 			 	while Gtk.events_pending():
 			 		Gtk.main_iteration()
-
-
-			
-
 
 	def set_song_title(self,title):
 		label = self.mainBuilder.get_object("label_song_title")

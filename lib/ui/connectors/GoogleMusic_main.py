@@ -71,4 +71,7 @@ class Signals(Signals):
 	def on_song_progress_change_value(self,widget,scroll,value,user_param=False):
 		self.mSelf.gst.seek(int(value))
 		return True
+	def on_entry_search_field_activate(self,widget,user_param=False):
+		text = widget.get_text()
+		self.mSelf.search_all(text)
 
