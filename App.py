@@ -155,6 +155,7 @@ class Gusic(object):
 		logging.info('setting main tree items')
 		parent_media = self.treestore_media.append(None,['sys-all','All Media','sys-all'])
 		parent_searches = self.treestore_media.append(parent_media,['self-gen-pl','Searches','self-gen-pl'])
+		self.search_playlists = parent_searches
 		parent_playlists = self.treestore_media.append(parent_media,['sys-pl','Playlists','sys'])
 		parent_auto_pl = self.treestore_media.append(parent_playlists,['sys-pl-auto','Auto playlists','sys-pl-auto'])
 		parent_user_pl = self.treestore_media.append(parent_playlists,['sys-pl-user','Your playlists','sys-pl-user'])
@@ -180,17 +181,21 @@ class Gusic(object):
 		self.treeview_media_view.expand_all()
 		self.treeview_media_view.set_cursor(0)
 		return True
-	def viewPlaylist(self,Plid,name):
+	def viewPlaylist(self,Plid,name,Local=False):
 		logging.info('request for %s with id %s',name,Plid)
-		if self.Playlists.playlistExists(Plid):
-			logging.info('%s exists, setting treeview_main_song_view to playlist model',Plid)
+		if Local:
+			logging.info('Local Playlist')
 			self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
-		else:		
-			logging.info("%s doesn't exists. Fetching playlist and store in self.Playlists as a Playlist class",Plid)
-			playlist = Playlist(self.api.get_playlist_songs(Plid),Plid,name)
-			self.Playlists.addPlaylist(playlist)
-			logging.info('setting treeview_main_song_view model to playlist %s model',Plid)
-			self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
+		else:
+			if self.Playlists.playlistExists(Plid):
+				logging.info('%s exists, setting treeview_main_song_view to playlist model',Plid)
+				self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
+			else:		
+				logging.info("%s doesn't exists. Fetching playlist and store in self.Playlists as a Playlist class",Plid)
+				playlist = Playlist(self.api.get_playlist_songs(Plid),Plid,name)
+				self.Playlists.addPlaylist(playlist)
+				logging.info('setting treeview_main_song_view model to playlist %s model',Plid)
+				self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
 		return True
 	def completion_action_match_selected(self,completion,model,tree_iter):
 
@@ -199,6 +204,38 @@ class Gusic(object):
 		if model[tree_iter][0] == 'song':
 			songIter = self.get_song_from_id(model[tree_iter][2],playIt=True)
 			#self.treeview_main_song_view.set_cursor(model[tree_iter][3])
+		elif model[tree_iter][0] == 'album':
+			#Creating a new playlist of al songs that has the album name
+			song_list = []		
+			item = self.liststore_all_songs.get_iter_first()
+			while (item != None):
+				if model[tree_iter][1] == self.liststore_all_songs.get_value(item,3):
+					for song in self.Library['songs']:
+						if song['id'] == self.liststore_all_songs.get_value(item,5):
+							song_list.append(song)
+				item = self.liststore_all_songs.iter_next(item)
+			playlist = Playlist(song_list,"search-" + model[tree_iter][1],model[tree_iter][1])
+			self.Playlists.addPlaylist(playlist)
+			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search'])
+			media_selection = self.treeview_media_view.get_selection()
+			media_selection.select_iter(media_iter)
+
+		elif model[tree_iter][0] == 'artist':
+			#Creating a new playlist of al songs that has the album name
+			song_list = []		
+			item = self.liststore_all_songs.get_iter_first()
+			while (item != None):
+				if model[tree_iter][1] == self.liststore_all_songs.get_value(item,4):
+					for song in self.Library['songs']:
+						if song['id'] == self.liststore_all_songs.get_value(item,5):
+							song_list.append(song)
+				item = self.liststore_all_songs.iter_next(item)
+			playlist = Playlist(song_list,"search-" + model[tree_iter][1],model[tree_iter][1])
+			self.Playlists.addPlaylist(playlist)
+			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search'])
+			media_selection = self.treeview_media_view.get_selection()
+			print media_selection
+			media_selection.select_iter(media_iter)
 
 	def get_song_from_id(self,songId,playIt):
 		item = self.liststore_all_songs.get_iter_first()

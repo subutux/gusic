@@ -71,12 +71,13 @@ class Signals(Signals):
 		logging.debug("rowType: %s",rowType)
 		if rowType == 'sys-all':
 			self.mSelf.treeview_main_song_view.set_model(self.mSelf.liststore_all_songs)
-		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen" or rowType == "gen":
+		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen" or rowType == "gen" or rowType == "search":
 			ShowPl = threading.Thread(target=self.mSelf.viewPlaylist,args=(model.get_value(tree_iter,0),model.get_value(tree_iter,1)))
 			ShowPl.start()
 			while ShowPl.isAlive():
 			 	while Gtk.events_pending():
 			 		Gtk.main_iteration()
+
 			#self.mSelf.viewPlaylist(model.get_value(tree_iter,0),model.get_value(tree_iter,1))
 		#TODO: check what is selected
 		#TODO: - check the type of the row
