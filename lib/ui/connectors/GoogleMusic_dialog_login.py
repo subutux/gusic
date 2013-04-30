@@ -44,7 +44,7 @@ class Signals(Signals):
 			img_ok_user.set_visible(True)
 			img_ok_pass.set_visible(True)
 			label_status.set_text("Downloading music information ...")
-			fetchSongs = threading.Thread(target=self.mSelf.fetchMusicLibrary)
+			fetchSongs = threading.Thread(target=self.mSelf.fetchMusicLibrary,args=(label_status,None))
 			fetchSongs.start()
 			while fetchSongs.isAlive():
 				while Gtk.events_pending():
