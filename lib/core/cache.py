@@ -86,6 +86,10 @@ class DB(object):
 			return False
 		else:
 			return True
+	def allIn(self,tableType,table):
+		return self.c.execute("SELECT * FROM " + tableType + "_" + table + ";")
+	def insert(self,tableType,table,data):
+		return True
 	def _tableExtist(self,table):
 		ret = self.c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?;",table)
 		result = ret.fetchone()
@@ -93,7 +97,7 @@ class DB(object):
 			return True
 		else:
 			return False
-	def createNew(tableType,table):
+	def createNew(self,tableType,table):
 		if tableType in self.tableTypes:
 			self.c.execute(self.tableTypes[tableType],tableType + '_' + table)
 		else:
@@ -105,6 +109,21 @@ class DB(object):
 	def getListStoreTableMap(self,tableType):
 		if tableType in self.listStoreTableMaps:
 			return self.listStoreTableMaps[tableType]
+
+class SqlListStore(Gtk.ListStore):
+	def __init__(self,DBClass,tableType,table):
+		self.db = DBClass
+		Gtk.ListStore.__init__(self.db.listStoreTypes[tableType])
+		if not self.db._tableExtist(tableType + '_' + table):
+			self.db.createNew(tableType,table)
+		else:
+			for row in self.db.allIn(tableType,table):
+				self.listStoreAppend(list(row))
+	def listStoreAppend(self,data):
+		return __parent__.append(data)
+	def append(self,data):
+		return True
+
 
 class Cache(object):
 	def __init__(self):
