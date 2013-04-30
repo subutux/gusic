@@ -56,27 +56,8 @@ class Signals(Signals):
 		(model, pathlist) = tree_selection.get_selected_rows()
 		self.mSelf._playIter(model,model.get_iter(pathlist[0]))
 	def on_treeview_media_view_cursor_changed(self,treeview,user_param=False):
-		logging.info("Treeview type is %s",str(type(treeview)))
-		if type(treeview) is None:
-			return False
-		tree_selection = treeview.get_selection()
-		(model,pathlist) = tree_selection.get_selected_rows()
-		if len(pathlist) == 0:
-			logging.info("Nothing selected")
-			return False
+		self.mSelf.load_playlist_into_main_view(treeview)
 
-		tree_iter = model.get_iter(pathlist[0])
-		logging.debug("treeview pathlist: %s", str(pathlist))
-		rowType = model.get_value(tree_iter,2)
-		logging.debug("rowType: %s",rowType)
-		if rowType == 'sys-all':
-			self.mSelf.treeview_main_song_view.set_model(self.mSelf.liststore_all_songs)
-		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen" or rowType == "gen" or rowType == "search":
-			ShowPl = threading.Thread(target=self.mSelf.viewPlaylist,args=(model.get_value(tree_iter,0),model.get_value(tree_iter,1)))
-			ShowPl.start()
-			while ShowPl.isAlive():
-			 	while Gtk.events_pending():
-			 		Gtk.main_iteration()
 
 			#self.mSelf.viewPlaylist(model.get_value(tree_iter,0),model.get_value(tree_iter,1))
 		#TODO: check what is selected

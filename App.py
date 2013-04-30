@@ -217,8 +217,10 @@ class Gusic(object):
 			playlist = Playlist(song_list,"search-" + model[tree_iter][1],model[tree_iter][1])
 			self.Playlists.addPlaylist(playlist)
 			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search'])
+			self.treeview_media_view.expand_all()
 			media_selection = self.treeview_media_view.get_selection()
 			media_selection.select_iter(media_iter)
+			self.load_playlist_into_main_view(self.treeview_media_view)
 
 		elif model[tree_iter][0] == 'artist':
 			#Creating a new playlist of al songs that has the album name
@@ -233,9 +235,10 @@ class Gusic(object):
 			playlist = Playlist(song_list,"search-" + model[tree_iter][1],model[tree_iter][1])
 			self.Playlists.addPlaylist(playlist)
 			media_iter = self.treestore_media.append(self.search_playlists,["search-" + model[tree_iter][1],model[tree_iter][1],'search'])
+			self.treeview_media_view.expand_all()
 			media_selection = self.treeview_media_view.get_selection()
-			print media_selection
 			media_selection.select_iter(media_iter)
+			self.load_playlist_into_main_view(self.treeview_media_view)
 
 	def get_song_from_id(self,songId,playIt):
 		item = self.liststore_all_songs.get_iter_first()
@@ -253,7 +256,28 @@ class Gusic(object):
 					self._playIter(model,item)
 				return item
 			item = self.liststore_all_songs.iter_next(item)
+	def load_playlist_into_main_view(self,treeview):
+		logging.info("Treeview type is %s",str(type(treeview)))
+		if type(treeview) is None:
+			return False
+		tree_selection = treeview.get_selection()
+		(model,pathlist) = tree_selection.get_selected_rows()
+		if len(pathlist) == 0:
+			logging.info("Nothing selected")
+			return False
 
+		tree_iter = model.get_iter(pathlist[0])
+		logging.debug("treeview pathlist: %s", str(pathlist))
+		rowType = model.get_value(tree_iter,2)
+		logging.debug("rowType: %s",rowType)
+		if rowType == 'sys-all':
+			self.treeview_main_song_view.set_model(self.liststore_all_songs)
+		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen" or rowType == "gen" or rowType == "search":
+			ShowPl = threading.Thread(target=self.viewPlaylist,args=(model.get_value(tree_iter,0),model.get_value(tree_iter,1)))
+			ShowPl.start()
+			while ShowPl.isAlive():
+			 	while Gtk.events_pending():
+			 		Gtk.main_iteration()
 
 
 			
