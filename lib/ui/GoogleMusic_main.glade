@@ -403,7 +403,11 @@
               <object class="GtkEntry" id="entry_search_field">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="margin_left">5</property>
+                <property name="margin_right">10</property>
                 <property name="invisible_char">•</property>
+                <property name="primary_icon_stock">gtk-find</property>
+                <property name="placeholder_text">Search</property>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -30,6 +30,7 @@ from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
 from lib.core.cache import Cache
 from lib.core import tools
+from lib.core.SearchCompletion import SearchCompletion
 from lib.core.playlists import Playlists, Playlist
 from gmusicapi import Webclient as gMusicApi
 import threading
@@ -40,9 +41,6 @@ class Gusic(object):
 	def __init__(self):
 		logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 		logging.debug("loading main window builder")
-		self.GtkScreen = Gdk.Screen.get_default()
-		
-		
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
 		self.aboutBuilder = GoogleMusic_about.Build(self,None)
@@ -77,6 +75,7 @@ class Gusic(object):
 		self.liststore_media = self.mainBuilder.get_object('liststore_media')
 		self.treestore_media = self.mainBuilder.get_object('treestore_media')
 		#TODO: set Style properties (DONE)
+		self.GtkScreen = Gdk.Screen.get_default()
 		self.style_context = Gtk.StyleContext()
 		self.css_provider = Gtk.CssProvider()
 		self.css_provider.load_from_path('lib/core/styles.css')
@@ -103,9 +102,15 @@ class Gusic(object):
 		while self.loggedIn == False:
 			time.sleep(0.2)
 		return True
-	def fetchMusicLibrary(self):
+	def fetchMusicLibrary(self,status,other):
 		logging.info("loading fist api call: self.api.get_all_songs()")
-		self.Library['songs'] = self.api.get_all_songs()
+		get_all_songs = self.api.get_all_songs(True)
+		self.Library['songs'] = []
+		for chunk in get_all_songs:
+		 	for song in chunk:
+		 		self.Library['songs'].append(song)
+		 	status.set_text('Downloading music information ... (' + str(len(self.Library['songs'])) + ' songs)')
+		
 		self.liststore_all_songs = self.mainBuilder.get_object('liststore_all_songs')
 		self.treeview_main_song_view = self.mainBuilder.get_object('treeview_main_song_view')
 		logging.info('removing model from treeview_main_song_view')
@@ -113,6 +118,7 @@ class Gusic(object):
 		songAdd = 0
 		albumArtUrls = []
 		logging.info('storing song info into self.liststore_all_songs')
+		status.set_text('Saving music information into database ...')
 		for song in self.Library['songs']:
 			if not 'albumArtUrl' in song:
 				song['albumArtUrl'] = 'null'
@@ -131,13 +137,18 @@ class Gusic(object):
 		self.mainBuilder.get_object('treeviewcolumn_artist').set_sort_column_id(4)
 		self.mainBuilder.get_object('treeviewcolumn_album').set_sort_column_id(3)
 		self.treeview_main_song_view.set_cursor(0)
-
+		self.searchCompletion = SearchCompletion(self.liststore_all_songs)
 		self.searchField = self.mainBuilder.get_object('entry_search_field')
-		self.searchCompletion = Gtk.EntryCompletion()
-		self.searchCompletion.set_model(self.liststore_all_songs)
+		Completion = Gtk.EntryCompletion()
+		Completion.set_model(self.searchCompletion.get_matchStore())
 		#TODO: Multi column completion (songs, albums and artists)
-		self.searchCompletion.set_text_column(1)
-		self.searchField.set_completion(self.searchCompletion)
+		Completion.set_text_column(1)
+		cell = Gtk.CellRendererText()
+		Completion.pack_end(cell,True)
+		Completion.add_attribute(cell,'text',0)
+		self.searchField.set_completion(Completion)
+		Completion.connect('match-selected',self.completion_action_match_selected)
+
 	def fetchPlaylistLibrary(self):
 		logging.info('fetching all playlists')
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
@@ -181,6 +192,36 @@ class Gusic(object):
 			logging.info('setting treeview_main_song_view model to playlist %s model',Plid)
 			self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
 		return True
+	def completion_action_match_selected(self,completion,model,tree_iter):
+
+		logging.info('selected %s (%s,id=%s) from completion',model[tree_iter][1],model[tree_iter][0],model[tree_iter][2])
+
+		if model[tree_iter][0] == 'song':
+			songIter = self.get_song_from_id(model[tree_iter][2],playIt=True)
+			#self.treeview_main_song_view.set_cursor(model[tree_iter][3])
+
+	def get_song_from_id(self,songId,playIt):
+		item = self.liststore_all_songs.get_iter_first()
+		while (item != None):
+			
+			if self.liststore_all_songs.get_value(item,5) == songId:
+
+				print item
+				tree_selection = self.treeview_main_song_view.get_selection()
+				tree_selection.select_iter(item)
+				(model,pathlist) = tree_selection.get_selected_rows()
+				self.treeview_main_song_view.scroll_to_cell(pathlist[0])
+
+				if playIt:
+					self._playIter(model,item)
+				return item
+			item = self.liststore_all_songs.iter_next(item)
+
+
+
+			
+
+
 	def set_song_title(self,title):
 		label = self.mainBuilder.get_object("label_song_title")
 		label.set_text(title)
