@@ -18,6 +18,7 @@ import os
 import urllib2
 import logging
 import sqlite3
+from gi.repository import Gtk
 
 class DB(object):
 	def __init__(self,dbfile):
