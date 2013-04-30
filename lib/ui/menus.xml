@@ -1,0 +1,7 @@
+ <ui>
+ <popup name='SongPopupMenu'>
+    <menuitem action='More Info ...' />
+    <menuitem action='Edit ...' />
+    <menuitem action='Make offline' />
+  </popup>
+</ui>

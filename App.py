@@ -172,7 +172,7 @@ class Gusic(object):
 			if type(self.Library['playlists']['user'][pl]) is list:
 				for pl_ in self.Library['playlists']['user'][pl]:
 					logging.debug('appending user-playlist:%s id: %s',pl,pl_)
-					self.treestore_media.append(parent_user_pl,[pl_,pl,'gen',500])
+					self.treestore_media.append(parent_user_pl,[pl_,pl,'gen',400])
 			else:
 				logging.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['user'][pl])
 				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'sys-pl-user-gen',400])
