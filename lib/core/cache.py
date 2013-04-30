@@ -124,7 +124,6 @@ class SqlListStore(Gtk.ListStore):
 	def append(self,data):
 		return True
 
-
 class Cache(object):
 	def __init__(self):
 		self.cacheLocation = os.environ['HOME'] + '/.local/share/gusic/cache'
