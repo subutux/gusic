@@ -14,7 +14,7 @@
 # along with gusic.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 class SearchCompletion():
 	"""
 	Builds a ListStore with information of the mainStore
@@ -27,11 +27,15 @@ class SearchCompletion():
 			'albums' : [],
 			'artists' : []
 		}
-		self.matchStore = Gtk.ListStore(str,str,str)
+		self.matchStore = Gtk.ListStore(str,str,str,GdkPixbuf.Pixbuf)
 		#										 |
 		#								 |	 |	id (if any, else 'none')
 		#								 |	text
 		#								type (song,album,artist)
+		self.iconSong = GdkPixbuf.Pixbuf.new_from_file('imgs/icon-song-16.png')
+		self.iconArtist = GdkPixbuf.Pixbuf.new_from_file('imgs/icon-artist-16.png')
+		self.iconAlbum = GdkPixbuf.Pixbuf.new_from_file('imgs/icon-album-16.png')
+		
 		self.update_matchStore()
 
 	def update_matchStore(self):
@@ -47,15 +51,15 @@ class SearchCompletion():
 			album = self.mainStore.get_value(item,3)
 			artist = self.mainStore.get_value(item,4)
 			#song
-			self.matchStore.append(['song',song,self.mainStore.get_value(item,5)])
+			self.matchStore.append(['song',song,self.mainStore.get_value(item,5),self.iconSong])
 			#album
 			if album not in self.tmpStore['albums']:
 				self.tmpStore['albums'].append(album)
-				self.matchStore.append(['album',album,'none'])
+				self.matchStore.append(['album',album,'none',self.iconAlbum])
 			#artist
 			if artist not in self.tmpStore['artists']:
 				self.tmpStore['artists'].append(artist)
-				self.matchStore.append(['artist',artist,'none'])
+				self.matchStore.append(['artist',artist,'none',self.iconArtist])
 			item = self.mainStore.iter_next(item)
 	def get_matchStore(self):
 		return self.matchStore

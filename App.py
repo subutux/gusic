@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This file is part of gusic.
 
 # gusic is free software: you can redistribute it and/or modify
@@ -142,11 +143,12 @@ class Gusic(object):
 		Completion = Gtk.EntryCompletion()
 		Completion.set_model(self.searchCompletion.get_matchStore())
 		#TODO: Multi column completion (songs, albums and artists) [DONE]
-		Completion.set_text_column(1)
-		cell = Gtk.CellRendererText()
+		
+		cell = Gtk.CellRendererPixbuf()
 		Completion.pack_end(cell,True)
-		Completion.add_attribute(cell,'text',0)
+		Completion.add_attribute(cell,'pixbuf',3)
 		self.searchField.set_completion(Completion)
+		Completion.set_text_column(1)
 		Completion.connect('match-selected',self.completion_action_match_selected)
 
 	def fetchPlaylistLibrary(self):
@@ -202,6 +204,8 @@ class Gusic(object):
 		logging.info('selected %s (%s,id=%s) from completion',model[tree_iter][1],model[tree_iter][0],model[tree_iter][2])
 
 		if model[tree_iter][0] == 'song':
+			self.select_playlist_from_id('sys-all')
+			self.load_playlist_into_main_view('sys-all')
 			songIter = self.get_song_from_id(model[tree_iter][2],playIt=True)
 			#self.treeview_main_song_view.set_cursor(model[tree_iter][3])
 		elif model[tree_iter][0] == 'album':
@@ -289,20 +293,32 @@ class Gusic(object):
 				if playIt:
 					self._playIter(model,item)
 				return item
+
 			item = self.liststore_all_songs.iter_next(item)
+	def select_playlist_from_id(self,playlistId):
+		item = self.liststore_media.get_iter_first()
+		while (item != None):
+			if self.liststore_media.get_value(item,2) == playlistId:
+				tree_selection = self.treeview_media_view.get_selection()
+				tree_selection.select_iter(item)
+				item = None
+			item = self.liststore_media.iter_next(item)
 	def load_playlist_into_main_view(self,treeview):
 		logging.info("Treeview type is %s",str(type(treeview)))
 		if type(treeview) is None:
 			return False
-		tree_selection = treeview.get_selection()
-		(model,pathlist) = tree_selection.get_selected_rows()
-		if len(pathlist) == 0:
-			logging.info("Nothing selected")
-			return False
+		elif type(treeview) is str:
+			rowType = treeview
+		else:
+			tree_selection = treeview.get_selection()
+			(model,pathlist) = tree_selection.get_selected_rows()
+			if len(pathlist) == 0:
+				logging.info("Nothing selected")
+				return False
 
-		tree_iter = model.get_iter(pathlist[0])
-		logging.debug("treeview pathlist: %s", str(pathlist))
-		rowType = model.get_value(tree_iter,2)
+			tree_iter = model.get_iter(pathlist[0])
+			logging.debug("treeview pathlist: %s", str(pathlist))
+			rowType = model.get_value(tree_iter,2)
 		logging.debug("rowType: %s",rowType)
 		if rowType == 'sys-all':
 			self.treeview_main_song_view.set_model(self.liststore_all_songs)
