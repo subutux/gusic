@@ -26,10 +26,12 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.ui import GoogleMusic_about
+from lib.ui import GoogleMusic_log
 from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
 from lib.core.cache import Cache
+from lib.core.loggingHandlers import ListStoreLoggingHandler
 from lib.core import tools
 from lib.core.SearchCompletion import SearchCompletion
 from lib.core.playlists import Playlists, Playlist
@@ -38,10 +40,19 @@ import threading
 import logging
 import gst
 import time
+logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
+log = logging.getLogger('gusic')
+
+
+
 class Gusic(object):
 	def __init__(self):
-		logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
-		logging.debug("loading main window builder")
+		self.logBuilder = GoogleMusic_log.Build(self,None)
+		self.logBuilder.get_object('window_log').connect('delete-event', lambda w, e: w.hide() or True)
+		self.log_scroll = True
+		logging._handlers.ListStoreLoggingHandler = ListStoreLoggingHandler
+		log.addHandler(logging._handlers.ListStoreLoggingHandler(self.logBuilder.get_object('liststore_log')))
+		log.debug("loading main window builder")
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
 		self.aboutBuilder = GoogleMusic_about.Build(self,None)
@@ -52,7 +63,7 @@ class Gusic(object):
 			"GtkSource": []
 		}
 		self.Library = {}
-		logging.debug('loading GStreamer')
+		log.debug('loading GStreamer')
 		self.gst = GStreamer()
 		self.gst.set_playback()
 		self.obj_song_progress = self.mainBuilder.get_object('song_progress')
@@ -61,14 +72,14 @@ class Gusic(object):
 		self.image_playpause = self.mainBuilder.get_object('image_playpause')
 
 		self.Playlists = Playlists()
-		logging.debug('Registering Bus events')
+		log.debug('Registering Bus events')
 		self.Bus = Bus()
 		self.Bus.registerEvent("on-start-playing")
 		self.Bus.registerEvent("on-pause")
 		self.Bus.registerEvent("on-login")
 		self.Bus.registerEvent("on-update-library")
 		self.Bus.registerEvent("on-song-ended")
-		logging.debug('connecting self._playNext to bus event "on-song-ended"')
+		log.debug('connecting self._playNext to bus event "on-song-ended"')
 		self.Bus.connect("on-song-ended",self._playNext)
 		self.Cache = Cache()
 		self.treeview_media_view = self.mainBuilder.get_object('treeview_media_view')
@@ -84,11 +95,11 @@ class Gusic(object):
 
 
 		if self.keyring.haveLoginDetails():
-			logging.info("Got login details in keyring. Loading Gusic")
+			log.info("Got login details in keyring. Loading Gusic")
 			self.startGusic()
 		else:
 
-			logging.info("Haven't got any login details. Asking nicely for some")
+			log.info("Haven't got any login details. Asking nicely for some")
 			self.loginBuilder = GoogleMusic_dialog_login.Build(self,None)
 			self.loginDialog = self.loginBuilder.get_object('window_login')
 			self.image_logo = self.loginBuilder.get_object('image_logo')
@@ -104,7 +115,7 @@ class Gusic(object):
 			time.sleep(0.2)
 		return True
 	def fetchMusicLibrary(self,status,other):
-		logging.info("loading fist api call: self.api.get_all_songs()")
+		log.info("loading fist api call: self.api.get_all_songs()")
 		get_all_songs = self.api.get_all_songs(True)
 		self.Library['songs'] = []
 		for chunk in get_all_songs:
@@ -114,11 +125,11 @@ class Gusic(object):
 		
 		self.liststore_all_songs = self.mainBuilder.get_object('liststore_all_songs')
 		self.treeview_main_song_view = self.mainBuilder.get_object('treeview_main_song_view')
-		logging.info('removing model from treeview_main_song_view')
+		log.info('removing model from treeview_main_song_view')
 		self.treeview_main_song_view.set_model(None)
 		songAdd = 0
 		albumArtUrls = []
-		logging.info('storing song info into self.liststore_all_songs')
+		log.info('storing song info into self.liststore_all_songs')
 		status.set_text('Saving music information into database ...')
 		for song in self.Library['songs']:
 			if not 'albumArtUrl' in song:
@@ -132,7 +143,7 @@ class Gusic(object):
 			if not 'totalTracks' in song:
 				song['totalTracks'] = 0
 			self.liststore_all_songs.append([song['type'],song['title'],str(song['lastPlayed']),song['album'],song['artist'],song['id'],song['disc'],song['track'],song['totalTracks'],song['genre'],song['url'],song['albumArtUrl'],song['durationMillis']])
-		logging.info('setting treeview_main_song_view model to self.liststore_all_songs')
+		log.info('setting treeview_main_song_view model to self.liststore_all_songs')
 		self.treeview_main_song_view.set_model(self.liststore_all_songs)
 		self.mainBuilder.get_object('treeviewcolumn_title').set_sort_column_id(1)
 		self.mainBuilder.get_object('treeviewcolumn_artist').set_sort_column_id(4)
@@ -152,56 +163,56 @@ class Gusic(object):
 		Completion.connect('match-selected',self.completion_action_match_selected)
 
 	def fetchPlaylistLibrary(self):
-		logging.info('fetching all playlists')
+		log.info('fetching all playlists')
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
-		logging.info('setting main tree items')
+		log.info('setting main tree items')
 		parent_media = self.treestore_media.append(None,['sys-all','All Media','sys-all',900])
 		parent_searches = self.treestore_media.append(parent_media,['self-gen-pl','Searches','self-gen-pl',700])
 		self.search_playlists = parent_searches
 		parent_playlists = self.treestore_media.append(parent_media,['sys-pl','Playlists','sys',700])
 		parent_auto_pl = self.treestore_media.append(parent_playlists,['sys-pl-auto','Auto playlists','sys-pl-auto',500])
 		parent_user_pl = self.treestore_media.append(parent_playlists,['sys-pl-user','Your playlists','sys-pl-user',500])
-		logging.info('setting dynamic fetched playlists')
+		log.info('setting dynamic fetched playlists')
 		for pl in self.Library['playlists']['auto'].keys():
 			if type(self.Library['playlists']['auto'][pl]) is list:
 				for pl_ in self.Library['playlists']['auto'][pl]:
-					logging.debug('appending auto-playlist:%s id: %s',pl,pl_)
+					log.debug('appending auto-playlist:%s id: %s',pl,pl_)
 					self.treestore_media.append(parent_auto_pl,[pl,pl_,'gen'])
 			else:
-				logging.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['auto'][pl])
+				log.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['auto'][pl])
 				self.treestore_media.append(parent_auto_pl,[self.Library['playlists']['auto'][pl],pl,'sys-pl-auto-gen',400])
 		for pl in self.Library['playlists']['user'].keys():
 			if type(self.Library['playlists']['user'][pl]) is list:
 				for pl_ in self.Library['playlists']['user'][pl]:
-					logging.debug('appending user-playlist:%s id: %s',pl,pl_)
+					log.debug('appending user-playlist:%s id: %s',pl,pl_)
 					self.treestore_media.append(parent_user_pl,[pl_,pl,'gen',400])
 			else:
-				logging.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['user'][pl])
+				log.debug('appending auto-playlist:%s id: %s',pl,self.Library['playlists']['user'][pl])
 				self.treestore_media.append(parent_user_pl,[self.Library['playlists']['user'][pl],pl,'sys-pl-user-gen',400])
-		logging.info('setting treeview_media_view model to self.treestore_media')
+		log.info('setting treeview_media_view model to self.treestore_media')
 		self.treeview_media_view.set_model(self.treestore_media)
 		self.treeview_media_view.expand_all()
 		self.treeview_media_view.set_cursor(0)
 		return True
 	def viewPlaylist(self,Plid,name,Local=False):
-		logging.info('request for %s with id %s',name,Plid)
+		log.info('request for %s with id %s',name,Plid)
 		if Local:
-			logging.info('Local Playlist')
+			log.info('Local Playlist')
 			self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
 		else:
 			if self.Playlists.playlistExists(Plid):
-				logging.info('%s exists, setting treeview_main_song_view to playlist model',Plid)
+				log.info('%s exists, setting treeview_main_song_view to playlist model',Plid)
 				self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
 			else:		
-				logging.info("%s doesn't exists. Fetching playlist and store in self.Playlists as a Playlist class",Plid)
+				log.info("%s doesn't exists. Fetching playlist and store in self.Playlists as a Playlist class",Plid)
 				playlist = Playlist(self.api.get_playlist_songs(Plid),Plid,name)
 				self.Playlists.addPlaylist(playlist)
-				logging.info('setting treeview_main_song_view model to playlist %s model',Plid)
+				log.info('setting treeview_main_song_view model to playlist %s model',Plid)
 				self.treeview_main_song_view.set_model(self.Playlists.getPlaylist(Plid).getModel())
 		return True
 	def completion_action_match_selected(self,completion,model,tree_iter):
 
-		logging.info('selected %s (%s,id=%s) from completion',model[tree_iter][1],model[tree_iter][0],model[tree_iter][2])
+		log.info('selected %s (%s,id=%s) from completion',model[tree_iter][1],model[tree_iter][0],model[tree_iter][2])
 
 		if model[tree_iter][0] == 'song':
 			self.select_playlist_from_id('sys-all')
@@ -304,7 +315,7 @@ class Gusic(object):
 				item = None
 			item = self.liststore_media.iter_next(item)
 	def load_playlist_into_main_view(self,treeview):
-		logging.info("Treeview type is %s",str(type(treeview)))
+		log.info("Treeview type is %s",str(type(treeview)))
 		if type(treeview) is None:
 			return False
 		elif type(treeview) is str:
@@ -313,13 +324,13 @@ class Gusic(object):
 			tree_selection = treeview.get_selection()
 			(model,pathlist) = tree_selection.get_selected_rows()
 			if len(pathlist) == 0:
-				logging.info("Nothing selected")
+				log.info("Nothing selected")
 				return False
 
 			tree_iter = model.get_iter(pathlist[0])
-			logging.debug("treeview pathlist: %s", str(pathlist))
+			log.debug("treeview pathlist: %s", str(pathlist))
 			rowType = model.get_value(tree_iter,2)
-		logging.debug("rowType: %s",rowType)
+		log.debug("rowType: %s",rowType)
 		if rowType == 'sys-all':
 			self.treeview_main_song_view.set_model(self.liststore_all_songs)
 		elif rowType == "sys-pl-auto-gen" or rowType == "sys-pl-user-gen" or rowType == "gen" or rowType == "search":
@@ -366,23 +377,23 @@ class Gusic(object):
 			songId = model.get_value(tree_iter,5)
 			songTitle = model.get_value(tree_iter,1)
 			songArtist = model.get_value(tree_iter,4)
-			logging.info('playrequest for %s(%s)',songTitle,songId)
+			log.info('playrequest for %s(%s)',songTitle,songId)
 			try:
 			 	songUrl = self.api.get_stream_url(songId)
-			 	logging.info('streaming url: <%s>',songUrl)
+			 	log.info('streaming url: <%s>',songUrl)
 			except urllib2.HTTPError:
-				logging.exception("Exception while retreaving stream url")
+				log.exception("Exception while retreaving stream url")
 				self.Error(title="Error retrieving stream",body="Gusic was unable to retrieve the streaming url. This likely means that you've exceeded your streaming limit. (Ouch!)")
 				return False
 			self.set_song_title(songTitle)
 			self.set_song_artist(songArtist)
 			self.treeview_main_song_view.set_cursor(model.get_path(tree_iter))
-			logging.info('starting play thread')
+			log.info('starting play thread')
 			play = threading.Thread(target=self.gst.playpause,args=(songUrl,None))
 			play.start()
 			self.obj_song_progress.set_sensitive(True)
 			imgUrl = 'http:' + model.get_value(tree_iter,11)
-			logging.debug('album art url: <%s>',imgUrl)
+			log.debug('album art url: <%s>',imgUrl)
 			if imgUrl != 'http:null':
 				# Setting size of album art to 400
 				imgUrl = imgUrl.replace('s130','s400')

@@ -18,6 +18,7 @@ import pygst
 pygst.require("0.10")
 import gst
 import logging
+log = logging.getLogger('gusic')
 class GStreamer(object):
     def __init__(self):
         self.status = 'NULL'
@@ -36,34 +37,34 @@ class GStreamer(object):
             bus.connect('message',self.on_message)
     def playpause(self,song,nope=None):
         if song == None and self.status == self.PLAYING:
-            logging.debug('song is %s and self.status is %s',song,self.status)
+            log.debug('song is %s and self.status is %s',song,self.status)
             self.player.set_state(gst.STATE_PAUSED)
             self.status = self.PAUSED
             return self.status
         elif song == None and self.status == self.PAUSED:
-            logging.debug('song is %s and self.status is %s',song,self.status)
+            log.debug('song is %s and self.status is %s',song,self.status)
             self.player.set_state(gst.STATE_PLAYING)
             self.status = self.PLAYING
             return self.status
         elif song == None and self.status == self.NULL:
-            logging.debug('song is %s and self.status is %s',song,self.status)
+            log.debug('song is %s and self.status is %s',song,self.status)
             self.status = self.NULL
             return self.status
         elif song == None and self.status == self.STOP:
-            logging.debug('song is %s and self.status is %s',song,self.status)
+            log.debug('song is %s and self.status is %s',song,self.status)
             return 42
         else:
             if self.nowplaying == None:
-                logging.debug('song is %s, self.nowplaying is %s and self.status is %s',song,self.nowplaying,self.status)
+                log.debug('song is %s, self.nowplaying is %s and self.status is %s',song,self.nowplaying,self.status)
                 self.launch(song)
                 return self.PLAYING
             elif song == self.nowplaying and self.status == self.PLAYING:
-                logging.debug('song is %s, self.nowplaying is %s and self.status is %s',song,self.nowplaying,self.status)
+                log.debug('song is %s, self.nowplaying is %s and self.status is %s',song,self.nowplaying,self.status)
                 self.player.set_state(gst.STATE_PAUSED)
                 self.state = self.PAUSED
                 return self.state
             elif song == self.nowplaying and self.state == self.PAUSED:
-                logging.debug('song is %s, self.nowplaying is %s and self.status is %s',song,self.nowplaying,self.status)
+                log.debug('song is %s, self.nowplaying is %s and self.status is %s',song,self.nowplaying,self.status)
                 self.player.set_state(gst.STATE_PLAYING)
                 self.state = self.PAUSED
                 return self.state

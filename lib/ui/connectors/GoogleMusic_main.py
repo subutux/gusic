@@ -19,6 +19,7 @@ from lib.core.signals import Signals
 from lib.core import tools
 import threading
 import logging
+log = logging.getLogger('gusic')
 import urllib2
 
 class Signals(Signals):
@@ -45,6 +46,9 @@ class Signals(Signals):
 		if self.dialogAbout == Gtk.ResponseType.DELETE_EVENT or self.dialogAbout == Gtk.ResponseType.CANCEL:
 			self.mSelf.aboutBuilder.get_object('aboutdialog1').hide()
 		return True
+	def on_menuitem_show_log_activate(self,widget):
+		self.dialogAbout = self.mSelf.logBuilder.get_object('window_log').show_all()
+
 	def on_button_next_clicked(self,widget):
 		self.mSelf._playNext()
 		return True

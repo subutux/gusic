@@ -16,6 +16,8 @@
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
 from gi.repository import GdkPixbuf, Gdk
 import urllib2
+import logging
+log = logging.getLogger('gusic')
 def setImageFromUrl(GtkImage,url,scale=None):
 	pixbufl = GdkPixbuf.PixbufLoader()
 	ulib = urllib2.urlopen(url)
@@ -23,7 +25,7 @@ def setImageFromUrl(GtkImage,url,scale=None):
 	pixbufl.close()
 	pixbuf = pixbufl.get_pixbuf()
 	if scale is not None:
-		print "scaling",scale[0],scale[1]
+		log.debug("scaling w %s h %s",str(scale[0]),str(scale[1]))
 		pixbuf = pixbuf.scale_simple(scale[0],scale[1],GdkPixbuf.InterpType.BILINEAR)
 	GtkImage.set_from_pixbuf(GdkPixbuf.Pixbuf.copy(pixbuf))
 def setImageFromCache(GtkImage,url,cache,scale=None):

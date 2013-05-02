@@ -19,7 +19,7 @@ import urllib2
 import logging
 import sqlite3
 from gi.repository import Gtk
-
+log = logging.getLogger('gusic')
 class DB(object):
 	def __init__(self,dbfile):
 		self.dbfile = dbfile
@@ -39,21 +39,21 @@ class DB(object):
 		"playlist": ["type","title","lastPlayed","album","albumArtist","id","disc","track","totalTracks","genre","url","albumArtUrl","durationMilis"]
 		}
 	def cleanDB(self):
-		logging.info('closing DB')
+		log.info('closing DB')
 		self.db.close()
 		try:
 			os.remove(self.dbfile)
 		except:
-			logging.exeception('Exception while removing dbfile: %s',self.dbfile)
+			log.exeception('Exception while removing dbfile: %s',self.dbfile)
 			return False
 		self.db = sqlite3.connect(self.dbfile)
 		self.c = self.db.cursor()
 		self._initDB()
 	def _initDB(self):
-		logging.info("Initializing database %s: TABLE settings",self.dbfile)
+		log.info("Initializing database %s: TABLE settings",self.dbfile)
 		self.c.execute('''CREATE TABLE settings 
 			(id,setting,value)''')
-		logging.info("Initializing database %s: TABLE all_songs",self.dbfile)
+		log.info("Initializing database %s: TABLE all_songs",self.dbfile)
 		self.c.execute('''CREATE TABLE all_songs
 			(id,comment,rating,lastPlayed,disc,composer,year,album,title,
 				deleted,albumArtist,type,titleNom,track,albumArtistNorm,totalTracks,
@@ -83,7 +83,7 @@ class DB(object):
 		try:
 			self.c.executemany("INSERT INTO all_songs VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",self.convertForSqlite(songs))
 		except sqlite3.Error:
-			logging.exception("Exception while importing all songs:")
+			log.exception("Exception while importing all songs:")
 			return False
 		else:
 			return True
@@ -136,20 +136,20 @@ class Cache(object):
 		if not os.path.isdir(self.cacheImages):
 			os.makedirs(self.cacheImages)
 	def checkImageCache(self,cacheURLs,auto_cache=True,quiet=True):
-		logging.debug("starting with auto_cache=%s and quiet=%s",str(auto_cache),str(quiet))
+		log.debug("starting with auto_cache=%s and quiet=%s",str(auto_cache),str(quiet))
 		cache = []
 		for url in cacheURLs:
-			logging.debug("starting url <%s>",url)
+			log.debug("starting url <%s>",url)
 			try:
 				fname = url.rsplit('/',1)[1]
 			except:
-				logging.exception("Exception while splitting url %s",url)
+				log.exception("Exception while splitting url %s",url)
 				return False
 			
 			if not os.path.isfile(self.cacheImages + '/' + fname):
-				logging.debug("file %s is not cached",fname)
+				log.debug("file %s is not cached",fname)
 				if auto_cache:
-					logging.debug('downloading <%s> to %s',url,fname)
+					log.debug('downloading <%s> to %s',url,fname)
 					ul = urllib2.urlopen(url)
 					open(self.cacheImages + '/' + fname,'w').write(ul.read())
 			if not quiet:

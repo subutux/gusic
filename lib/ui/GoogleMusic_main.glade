@@ -140,6 +140,7 @@
                         <property name="label">_New Playlist...</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="image">image1</property>
                         <property name="use_stock">False</property>
                       </object>
@@ -205,6 +206,15 @@
                         <property name="image">image2</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="on_menuitem_toggle_mini_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="menuitem_show_log">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Show log</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_show_log_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -521,6 +531,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="model">liststore_all_songs</property>
+                    <property name="search_column">1</property>
                     <signal name="row-activated" handler="on_treeview_main_song_view_row_activated" swapped="no"/>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection" id="treeview-selection1"/>
