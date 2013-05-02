@@ -652,6 +652,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="image">image-repeat</property>
+                <signal name="toggled" handler="on_togglebutton_repeat_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -666,6 +667,7 @@
                 <property name="receives_default">True</property>
                 <property name="image">image-shuffle</property>
                 <property name="always_show_image">True</property>
+                <signal name="toggled" handler="on_togglebutton_shuffle_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

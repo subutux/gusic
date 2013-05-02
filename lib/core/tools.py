@@ -55,3 +55,10 @@ def iter_prev(iter, model):
 	prev = model.get_iter(tuple(prev_path))
 	return prev
 
+def model_get_iter_last( model, parent=None ):
+  """
+  source : http://stackoverflow.com/a/2915781
+  Returns a gtk.TreeIter to the last row or None if there aren't any rows.
+  If parent is None, returns a gtk.TreeIter to the last root row."""
+  n = model.iter_n_children( parent )
+  return n and model.iter_nth_child( parent, n - 1 )

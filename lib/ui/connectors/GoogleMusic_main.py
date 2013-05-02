@@ -78,4 +78,9 @@ class Signals(Signals):
 	def on_entry_search_field_activate(self,widget,user_param=False):
 		text = widget.get_text()
 		self.mSelf.search_all(text)
+	def on_togglebutton_shuffle_toggled(self,widget,user_param=False):
+		self.mSelf.toggle_playmode('shuffle')
+	def on_togglebutton_repeat_toggled(self,widget,user_param=False):
+		self.mSelf.toggle_playmode('loop')
+
 

@@ -40,10 +40,9 @@ import threading
 import logging
 import gst
 import time
+from random import randrange
 logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 log = logging.getLogger('gusic')
-
-
 
 class Gusic(object):
 	def __init__(self):
@@ -62,6 +61,7 @@ class Gusic(object):
 			"duration": [],
 			"GtkSource": []
 		}
+		self.playmode = []
 		self.Library = {}
 		log.debug('loading GStreamer')
 		self.gst = GStreamer()
@@ -161,7 +161,6 @@ class Gusic(object):
 		self.searchField.set_completion(Completion)
 		Completion.set_text_column(1)
 		Completion.connect('match-selected',self.completion_action_match_selected)
-
 	def fetchPlaylistLibrary(self):
 		log.info('fetching all playlists')
 		self.Library['playlists'] = self.api.get_all_playlist_ids(auto=True,user=True)
@@ -288,7 +287,6 @@ class Gusic(object):
 			media_selection = self.treeview_media_view.get_selection()
 			media_selection.select_iter(media_iter)
 			self.load_playlist_into_main_view(self.treeview_media_view)
-
 	def get_song_from_id(self,songId,playIt):
 		item = self.liststore_all_songs.get_iter_first()
 		while (item != None):
@@ -339,6 +337,13 @@ class Gusic(object):
 			while ShowPl.isAlive():
 			 	while Gtk.events_pending():
 			 		Gtk.main_iteration()
+	def toggle_playmode(self,mode):
+		if mode in self.playmode:
+			self.playmode.remove(mode)
+			log.info('disabled playmode %s',mode)
+		else:
+			self.playmode.append(mode)
+			log.info('enabled playmode %s',mode)
 
 	def set_song_title(self,title):
 		label = self.mainBuilder.get_object("label_song_title")
@@ -414,20 +419,27 @@ class Gusic(object):
 					self._playIter(model,prev_iter)
 				else:
 					self.gst.seek(0)
-
 	def _playNext(self):
 		self.gst.playpause(None)
 		tree_selection = self.treeview_main_song_view.get_selection()
 		(model, pathlist) = tree_selection.get_selected_rows()
 		tree_iter = model.get_iter(pathlist[0])
 		next_iter = model.iter_next(tree_iter)
-		self._playIter(model,next_iter)
+		if next_iter != None:
+			if 'loop' in self.playmode:
+				next_iter = model.get_iter_first()
+			elif 'loop-one' in self.playmode:
+				next_iter = tree_iter
+			elif 'shuffle' in self.playmode:
+				total_songs = model.iter_n_children( None )
+				total_songs = total_songs - 1
+				next_iter = model.iter_nth_child(None,randrange(0,total_songs))
+			self._playIter(model,next_iter)
 	def Error(self,title,body):
 		dialog = Gtk.MessageDialog(parent=self.main,flags=Gtk.DialogFlags.MODAL,type=Gtk.MessageType.ERROR,buttons=Gtk.ButtonsType.CANCEL,message_format=title)
 		dialog.format_secondary_text(body)
 		dialog.run()
 		dialog.destroy()
-
 
 class main():
 	def __init__(self):
@@ -436,6 +448,4 @@ class main():
 		app = Gusic()
 		Gtk.main()
 		Gdk.threads_leave()
-
-
 main()
