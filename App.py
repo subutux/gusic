@@ -91,11 +91,12 @@ class Gusic(object):
 		self.liststore_media = self.mainBuilder.get_object('liststore_media')
 		self.treestore_media = self.mainBuilder.get_object('treestore_media')
 		#TODO: set Style properties (DONE)
+		self.mainBuilder.get_object('treeview_media_view').set_name('treeview_media_view')
 		self.GtkScreen = Gdk.Screen.get_default()
 		self.style_context = Gtk.StyleContext()
 		self.css_provider = Gtk.CssProvider()
 		self.css_provider.load_from_path('lib/core/styles.css')
-		self.style_context.add_provider_for_screen(self.GtkScreen,self.css_provider,Gtk.STYLE_PROVIDER_PRIORITY_USER)
+		self.style_context.add_provider_for_screen(self.GtkScreen,self.css_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 
 		if self.keyring.haveLoginDetails():

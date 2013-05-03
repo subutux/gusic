@@ -26,6 +26,7 @@ class Notifier(object):
 		self.defaultIcon = self.createPixbuf('imgs/Gusic_logo-64.png')
 		self.notification = None
 	def _new_notif(self,title,text,icon=None):
+		log.debug('new notification (%s)', str(title + ' [' + text + ']'))
 		if self.notification:
 			self.notification.update(title,text,Gtk.STOCK_DIALOG_INFO)
 		else:
@@ -33,6 +34,7 @@ class Notifier(object):
 		if icon:
 			self.notification.set_icon_from_pixbuf(self.createPixbuf(icon))
 		else:
+			log.info('No icon given, using default')
 			self.notification.set_icon_from_pixbuf(self.defaultIcon)
 		
 		self.notification.set_urgency(Notify.Urgency.LOW)

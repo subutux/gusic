@@ -4,3 +4,34 @@
 GtkPaned {
 	border-radius: 4px;
 }
+#treeview_media_view {
+
+	/*background-image:-gtk-gradient(linear, left top, right top, from(#45484d), color-stop (83%,#45484d), to(#3f3f3f));*/
+	background-image: -gtk-gradient (linear,
+                                     left top, right top,
+                                     from (#45484d),
+                                     color-stop (0.95, #45484d),
+                                     to (#3f3f3f));
+	color: white;
+
+
+}
+#treeview_media_view:hover {
+
+	background-color:#4A4A4A;
+	background-image: -gtk-gradient (linear,
+                                     left top, right top,
+                                     from (#4A4A4A),
+                                     color-stop (0.95, #4A4A4A),
+                                     to (#3f3f3f));
+	color: white;
+}
+#treeview_media_view:selected {
+
+	background-color:#5069FF;
+	background-image: -gtk-gradient (linear,
+                                     left top, left bottom,
+                                     from (shade (#5069FF,1.1)),
+                                     to (#5069FF));
+	color: white;
+}
