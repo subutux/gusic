@@ -42,7 +42,8 @@ import logging
 import gst
 import time
 from random import randrange
-logging.basicConfig(filename="gusic.log",level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
+logfile = os.environ['HOME'] + '/.local/share/gusic/gusic.log'
+logging.basicConfig(filename=logfile,level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 log = logging.getLogger('gusic')
 
 class Gusic(object):

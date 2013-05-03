@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=Gusic
 Exec=gusic
-Icon=Gusic_icon-128.png
+Icon=Gusic_logo-128.png
 Type=Application
 Terminal=False
 Categories=AudioVideo;Audio;Music;Player;GTK;
