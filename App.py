@@ -32,6 +32,7 @@ from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
 from lib.core.cache import Cache
 from lib.core.loggingHandlers import ListStoreLoggingHandler
+from lib.core.notify import Notifier
 from lib.core import tools
 from lib.core.SearchCompletion import SearchCompletion
 from lib.core.playlists import Playlists, Playlist
@@ -54,6 +55,8 @@ class Gusic(object):
 		log.debug("loading main window builder")
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
+		self.main.set_wmclass ("Gusic", "Gusic")
+		self.main.set_title('Gusic')
 		self.aboutBuilder = GoogleMusic_about.Build(self,None)
 		self.keyring = keyring()
 		self.api = gMusicApi()
@@ -71,6 +74,7 @@ class Gusic(object):
 		self.toolbutton_play = self.mainBuilder.get_object('toolbutton_play')
 		self.image_playpause = self.mainBuilder.get_object('image_playpause')
 
+		self.notifier = Notifier()
 		self.Playlists = Playlists()
 		log.debug('Registering Bus events')
 		self.Bus = Bus()
@@ -102,6 +106,8 @@ class Gusic(object):
 			log.info("Haven't got any login details. Asking nicely for some")
 			self.loginBuilder = GoogleMusic_dialog_login.Build(self,None)
 			self.loginDialog = self.loginBuilder.get_object('window_login')
+			self.loginDialog.set_wmclass ("Gusic", "Gusic")
+			self.loginDialog.set_title('Gusic')
 			self.image_logo = self.loginBuilder.get_object('image_logo')
 			self.image_logo.set_from_file('imgs/Gusic_logo-256.png')
 			self.loginDialog.show_all()
@@ -382,6 +388,7 @@ class Gusic(object):
 			songId = model.get_value(tree_iter,5)
 			songTitle = model.get_value(tree_iter,1)
 			songArtist = model.get_value(tree_iter,4)
+			songAlbum = model.get_value(tree_iter,3)
 			log.info('playrequest for %s(%s)',songTitle,songId)
 			try:
 			 	songUrl = self.api.get_stream_url(songId)
@@ -405,9 +412,11 @@ class Gusic(object):
 				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_toolbar_art"),imgUrl,self.Cache,[50,50])).start()
 				threading.Thread(target=tools.setImageFromCache,args=(self.mainBuilder.get_object("image_art"),imgUrl,self.Cache,[200,200])).start()
 			else:
+				imgUrl = None
 				self.mainBuilder.get_object("image_toolbar_art").set_from_file("imgs/Gusic_logo-32.png")
 				self.mainBuilder.get_object("image_art").set_from_file("imgs/Gusic_logo-128.png")
 			self.start_checkProgress(model,tree_iter)
+			self.notifier._new_notif(songTitle + ' - ' + songArtist, songAlbum, self.Cache.getImageFromCache(imgUrl))
 	def _playPrev(self):
 		if self.gst.nowplaying is not None and self.gst.status is not self.gst.NULL:
 			if self.gst.status is self.gst.PAUSED or self.gst.status is self.gst.PLAYING:
