@@ -1,2 +1,2 @@
 #!/bin/bash
-./App.py
+./usr/share/gusic/App.py
