@@ -21,7 +21,7 @@ install:
         install -m644 lib/core/*.py $(DATADIR)/$(APPNAME)/lib/core/
         install -m644 lib/core/*.css $(DATADIR)/$(APPNAME)/lib/core/
  		
-        install -m644 data/misc/Gusic.desktop $(DATADIR)/applications
+        install -m644 Gusic.desktop $(DATADIR)/applications
         install -m644 imgs/Gusic_logo-128.png $(DATADIR)/pixmaps
         install -m755 gusic $(BIN)
         install -m755 App.py $(DATADIR)/$(APPNAME)/
