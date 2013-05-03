@@ -42,10 +42,11 @@ import logging
 import gst
 import time
 from random import randrange
+from gmusicapi.utils import utils
+
 logfile = os.environ['HOME'] + '/.local/share/gusic/gusic.log'
 logging.basicConfig(filename=logfile,level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 log = logging.getLogger('gusic')
-
 class Gusic(object):
 	def __init__(self):
 		self.logBuilder = GoogleMusic_log.Build(self,None)
@@ -53,6 +54,7 @@ class Gusic(object):
 		self.log_scroll = True
 		logging._handlers.ListStoreLoggingHandler = ListStoreLoggingHandler
 		log.addHandler(logging._handlers.ListStoreLoggingHandler(self.logBuilder.get_object('liststore_log')))
+		utils.log = log
 		log.debug("loading main window builder")
 		self.mainBuilder = GoogleMusic_main.Build(self,None)
 		self.main = self.mainBuilder.get_object('window1')
