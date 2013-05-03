@@ -10,12 +10,12 @@
   <object class="GtkImage" id="image-repeat">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../imgs/icon-repeat-22.png</property>
+    <property name="pixbuf">../../imgs/icon-repeat-16.png</property>
   </object>
   <object class="GtkImage" id="image-shuffle">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">../../imgs/icon-shuffle-22.png</property>
+    <property name="pixbuf">../../imgs/icon-shuffle-16.png</property>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
