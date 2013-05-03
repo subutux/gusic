@@ -14,18 +14,26 @@
 # along with gusic.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
+from gi.repository import Gtk
+from lib.core.signals import Signals
+from lib.core import tools
+import threading
 import logging
-class Bus(object):
-	def __init__(self):
-		self.events = {}
-	def registerEvent(self,event):
-		logging.debug("registering event %s",event)
-		self.events[event] = [];
-	def connect(self,event,function):
-		logging.debug("connecting %s to event %s",function.__name__,event)
-		self.events[event].append(function)
-	def emit(self,event):
-		logging.debug("emitting event %s",event)
-		if self.events is not []:
-			for function in self.events[event]:
-				function()
+import urllib2
+
+class Signals(Signals):
+	def on_toolbutton_pause_toggled(self,widget):
+		if self.mSelf.log_scroll == True:
+			self.mSelf.log_scroll = False
+		else:
+			self.mSelf.log_scroll = True
+
+		return True
+	def on_toolbutton_clear_clicked(self,widget):
+		self.mSelf.logBuilder.get_object('liststore_log').clear()
+		return True
+	def on_treeview_log_size_allocate(self,widget,event,data=None):
+		if self.mSelf.log_scroll == True:
+			adj = widget.get_vadjustment()
+			adj.set_value(adj.get_upper() - adj.get_page_size())
+		return True

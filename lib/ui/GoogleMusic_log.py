@@ -14,18 +14,23 @@
 # along with gusic.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2012-2013, Stijn Van Campenhout <stijn.vancampenhout@gmail.com>
-import logging
-class Bus(object):
-	def __init__(self):
-		self.events = {}
-	def registerEvent(self,event):
-		logging.debug("registering event %s",event)
-		self.events[event] = [];
-	def connect(self,event,function):
-		logging.debug("connecting %s to event %s",function.__name__,event)
-		self.events[event].append(function)
-	def emit(self,event):
-		logging.debug("emitting event %s",event)
-		if self.events is not []:
-			for function in self.events[event]:
-				function()
+
+from gi.repository import Gtk
+import os.path
+import importlib
+def Build(mainClass=None,connector=None):
+	whereami =  os.path.dirname(os.path.realpath(__file__))
+	whoami = os.path.splitext(__file__)[0]
+	if os.path.exists(whoami + '.glade'):
+		b =  Gtk.Builder()
+		b.add_from_file(whoami + '.glade')
+		if connector == None:
+			s = importlib.import_module('lib.ui.connectors.' + os.path.basename(whoami))
+			if mainClass != None:
+				b.connect_signals(s.Signals(mainClass))
+			else:
+				b.connect_signals(s.Signals())
+
+		else:
+			b.connect_signals(connector)
+		return b
