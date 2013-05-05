@@ -1,0 +1,5 @@
+commit a4de67691a7e16e06e24ff0f8918817a6f1c21cc
+Author: subutux <stijn.vancampenhout@gmail.com>
+Date:   Sun May 5 13:55:50 2013 +0200
+
+    Added changelog generation via makefile and `git log`

@@ -12,8 +12,17 @@ package-prep:
 		@echo "__version__ = \"$(VERSION)\" > lib/_version.py
 		@echo "$(VERSION)" > VERSION.txt
 
+clean:
+		rm -rf lib/*py[co]
+		rm -rf lib/ui/*.py[co]
+		rm -rf lib/core/*.py[co]
+		rm -rf *.py[co]
+
 changelog:
-		git log $(PREV_VERSION)... --pretty > CHANGELOG
+		@git log $(PREV_VERSION)... --pretty > CHANGELOG
+
+changelog-append:
+		@git log $(PREV_VERSION).. --pretty >> CHANGELOG
 
 install:
 		install -d $(BIN) $(DATADIR)/$(APPNAME) $(DATADIR)/$(APPNAME)/imgs $(DATADIR)/$(APPNAME)/lib $(DATADIR)/$(APPNAME)/lib/ui
