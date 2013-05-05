@@ -22,6 +22,7 @@ changelog:
 		@git log $(PREV_VERSION)... --pretty > CHANGELOG
 
 changelog-append:
+		@echo "" >> CHANGELOG
 		@git log $(PREV_VERSION).. --pretty >> CHANGELOG
 
 install:
