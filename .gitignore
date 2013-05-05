@@ -2,3 +2,4 @@
 gmusicapi.log
 lib/core/gstreamer.old.py
 gusic.log
+lib/_version.py

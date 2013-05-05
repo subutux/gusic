@@ -1,10 +1,15 @@
 prefix=/usr
+VERSION=\"$(shell git describe)\"
 BIN=$(DESTDIR)$(prefix)/bin
 DATADIR=$(DESTDIR)$(prefix)/share
 MANDIR=$(DATADIR)/man
 APPNAME=gusic
 EASY_INSTALL=/usr/bin/easy_install
 all:
+
+package-prep:
+		@echo "__version__ = $(VERSION)" > lib/_version.py
+
 
 install:
 		install -d $(BIN) $(DATADIR)/$(APPNAME) $(DATADIR)/$(APPNAME)/imgs $(DATADIR)/$(APPNAME)/lib $(DATADIR)/$(APPNAME)/lib/ui

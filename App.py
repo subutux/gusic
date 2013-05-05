@@ -23,6 +23,7 @@ import gobject
 gobject.threads_init()
 import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+from lib._version import __version__
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.ui import GoogleMusic_about
@@ -61,6 +62,7 @@ class Gusic(object):
 		self.main.set_wmclass ("Gusic", "Gusic")
 		self.main.set_title('Gusic')
 		self.aboutBuilder = GoogleMusic_about.Build(self,None)
+		self.aboutBuilder.get_object('aboutdialog1').set_version(__version__)
 		self.keyring = keyring()
 		self.api = gMusicApi()
 		self.song = {
