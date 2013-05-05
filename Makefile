@@ -1,5 +1,6 @@
 prefix=/usr
-VERSION=\"$(shell git describe)\"
+PREV_VERSION=$(shell cat VERSION.txt)
+VERSION=$(shell git describe)
 BIN=$(DESTDIR)$(prefix)/bin
 DATADIR=$(DESTDIR)$(prefix)/share
 MANDIR=$(DATADIR)/man
@@ -8,8 +9,11 @@ EASY_INSTALL=/usr/bin/easy_install
 all:
 
 package-prep:
-		@echo "__version__ = $(VERSION)" > lib/_version.py
+		@echo "__version__ = \"$(VERSION)\" > lib/_version.py
+		@echo "$(VERSION)" > VERSION.txt
 
+changelog:
+		git log $(PREV_VERSION)... --pretty > CHANGELOG
 
 install:
 		install -d $(BIN) $(DATADIR)/$(APPNAME) $(DATADIR)/$(APPNAME)/imgs $(DATADIR)/$(APPNAME)/lib $(DATADIR)/$(APPNAME)/lib/ui
