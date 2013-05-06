@@ -9,7 +9,7 @@ EASY_INSTALL=/usr/bin/easy_install
 all:
 
 package-prep:
-		@echo "__version__ = \"$(VERSION)\" > lib/_version.py
+		@echo "__version__ = \"$(VERSION)\"" > lib/_version.py
 		@echo "$(VERSION)" > VERSION.txt
 
 clean:

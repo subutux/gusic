@@ -22,6 +22,17 @@ v 0.1
 - read only mode
 v 0.2
 -----
+- Search!
+- Layout of UI
+- log viewing
+- easy installing (Makefile)
+- Notifications
+- Using GIR (gi.repository) when possible
+- basic styling & styling experimenting
+- Song playing and browsing stable
+
+v 0.3
+-----
 - caching!
 -- To clarify:
 Caching would be done using a SqLite back-end. The library is first loaded in an sqlite database.

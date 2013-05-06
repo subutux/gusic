@@ -142,7 +142,7 @@ class Gusic(object):
 		songAdd = 0
 		albumArtUrls = []
 		log.info('storing song info into self.liststore_all_songs')
-		status.set_text('Saving music information into database ...')
+		status.set_text('Saving music information into database ... (1/2)')
 		for song in self.Library['songs']:
 			if not 'albumArtUrl' in song:
 				song['albumArtUrl'] = 'null'
@@ -161,6 +161,7 @@ class Gusic(object):
 		self.mainBuilder.get_object('treeviewcolumn_artist').set_sort_column_id(4)
 		self.mainBuilder.get_object('treeviewcolumn_album').set_sort_column_id(3)
 		self.treeview_main_song_view.set_cursor(0)
+		status.set_text('Saving music information into database ... (2/2)')
 		self.searchCompletion = SearchCompletion(self.liststore_all_songs)
 		self.searchField = self.mainBuilder.get_object('entry_search_field')
 		Completion = Gtk.EntryCompletion()

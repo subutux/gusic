@@ -3,3 +3,32 @@ Author: subutux <stijn.vancampenhout@gmail.com>
 Date:   Sun May 5 13:55:50 2013 +0200
 
     Added changelog generation via makefile and `git log`
+commit 45ddad0fa412a98b0a0fec0d81918c637139a19e
+Author: subutux <stijn.vancampenhout@gmail.com>
+Date:   Sun May 5 14:01:50 2013 +0200
+
+    Added Clean option to makefile and changelog-append
+
+commit a4de67691a7e16e06e24ff0f8918817a6f1c21cc
+Author: subutux <stijn.vancampenhout@gmail.com>
+Date:   Sun May 5 13:55:50 2013 +0200
+
+    Added changelog generation via makefile and `git log`
+
+commit 6eecfad705b5efb4808d52190728db5d864dec0f
+Author: subutux <stijn.vancampenhout@gmail.com>
+Date:   Sun May 5 15:50:28 2013 +0200
+
+    Added newline before updating CHANGELOG with changelog-append
+
+commit 45ddad0fa412a98b0a0fec0d81918c637139a19e
+Author: subutux <stijn.vancampenhout@gmail.com>
+Date:   Sun May 5 14:01:50 2013 +0200
+
+    Added Clean option to makefile and changelog-append
+
+commit a4de67691a7e16e06e24ff0f8918817a6f1c21cc
+Author: subutux <stijn.vancampenhout@gmail.com>
+Date:   Sun May 5 13:55:50 2013 +0200
+
+    Added changelog generation via makefile and `git log`

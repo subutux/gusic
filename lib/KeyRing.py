@@ -20,14 +20,14 @@ class keyring(object):
 	def __init__(self):
 		self.loginDetails = False
 		if gk.is_available() is True:
-			if "GoogleMusic" in gk.list_keyring_names_sync()[1]:
-				self.keyring = gk.list_item_ids_sync("GoogleMusic")[1]
+			if "Gusic" in gk.list_keyring_names_sync()[1]:
+				self.keyring = gk.list_item_ids_sync("Gusic")[1]
 
-				self.loginDetails = self._get_first_key("GoogleMusic")
+				self.loginDetails = self._get_first_key("Gusic")
 				
 
 			else:
-				gk.create_sync("GoogleMusic","GoogleMusic")
+				gk.create_sync("Gusic","Gusic")
 	def haveLoginDetails(self):
 		if self.loginDetails == False:
 			return False
@@ -53,7 +53,9 @@ class keyring(object):
 		return self.loginDetails
 	def saveLoginDetails(self,user,password):
 		atts = gk.Attribute.list_new()
-		gk.Attribute.list_append_string(atts,'useWith','GoogleMusic')
-		key = gk.item_create_sync('GoogleMusic',0,user,atts,password, True)
+		gk.Attribute.list_append_string(atts,'useWith','Gusic')
+		gk.Attribute.list_append_string(atts,'user',user)
+
+		key = gk.item_create_sync('Gusic',0,user,atts,password, True)
 	def getLoginDetails():
 		return self.loginDetails()
