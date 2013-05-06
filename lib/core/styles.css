@@ -16,6 +16,29 @@ GtkPaned {
 
 
 }
+#display {
+	background-color:#FFFEC9;
+	box-shadow: 0px 0px 10px 5px #D2CC83 inset;
+	border-radius: 5px;
+}/*
+#window_main, GtkPaned, GtkTreeviewColumn, GtkScrolledWindow {
+	background-color:#3f3f3f;
+	border-color:#3f3f3f;
+}*/
+
+#treeview_main_song_view {
+
+	background-image: -gtk-gradient (linear,
+                                     left top, right top,
+                                     from (#3f3f3f),
+                                     color-stop(0.02,#45484d),
+                                     color-stop (0.98, #45484d),
+                                     to (#3f3f3f));
+	color: white;
+	border: none;
+
+}
+
 #treeview_media_view:hover {
 
 	background-color:#4A4A4A;

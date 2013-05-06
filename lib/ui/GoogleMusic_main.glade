@@ -309,45 +309,29 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="box5">
+              <object class="GtkViewport" id="viewport1">
+                <property name="width_request">400</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">7</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">20</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
+                <property name="shadow_type">etched-in</property>
                 <child>
-                  <object class="GtkImage" id="image_toolbar_art">
-                    <property name="width_request">50</property>
-                    <property name="height_request">50</property>
+                  <object class="GtkBox" id="box5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="pixbuf">../../imgs/Gusic_logo-32.png</property>
-                    <property name="icon-size">3</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="box4">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="homogeneous">True</property>
+                    <property name="spacing">7</property>
                     <child>
-                      <object class="GtkLabel" id="label_song_title">
+                      <object class="GtkImage" id="image_toolbar_art">
+                        <property name="width_request">50</property>
+                        <property name="height_request">50</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="justify">fill</property>
-                        <property name="ellipsize">middle</property>
-                        <property name="single_line_mode">True</property>
-                        <property name="max_width_chars">60</property>
-                        <attributes>
-                          <attribute name="style" value="normal"/>
-                          <attribute name="weight" value="bold"/>
-                          <attribute name="variant" value="small-caps"/>
-                        </attributes>
+                        <property name="margin_left">10</property>
+                        <property name="pixbuf">../../imgs/Gusic_logo-32.png</property>
+                        <property name="icon-size">3</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -356,12 +340,46 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label_song_details">
+                      <object class="GtkBox" id="box4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="ellipsize">middle</property>
-                        <property name="max_width_chars">60</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label_song_title">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="justify">fill</property>
+                            <property name="ellipsize">middle</property>
+                            <property name="single_line_mode">True</property>
+                            <property name="max_width_chars">60</property>
+                            <attributes>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="variant" value="small-caps"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label_song_details">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="ellipsize">middle</property>
+                            <property name="max_width_chars">60</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -369,23 +387,18 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
                 <property name="position">3</property>
               </packing>
             </child>
@@ -435,6 +448,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="pack_type">end</property>
                 <property name="position">7</property>
               </packing>
             </child>
