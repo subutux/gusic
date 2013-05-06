@@ -32,3 +32,4 @@ Author: subutux <stijn.vancampenhout@gmail.com>
 Date:   Sun May 5 13:55:50 2013 +0200
 
     Added changelog generation via makefile and `git log`
+
