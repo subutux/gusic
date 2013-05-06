@@ -27,7 +27,7 @@ Make shure you've got the following dependicies:
 python-setuptools python-gst0.10 libgirepository1.0-1 #and maybe others..
 ```
 
-The makefile automatically installs the [https://github.com/simon-weber/Unofficial-Google-Music-API/](gmusicapi) by using easy_install
+The makefile automatically installs the [gmusicapi](https://github.com/simon-weber/Unofficial-Google-Music-API/) by using easy_install
 
 
 So, What does it do?
