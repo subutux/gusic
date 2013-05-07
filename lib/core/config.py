@@ -18,27 +18,73 @@
 import json
 import os
 class Config(object):
-	def __init__(self):
+	def __init__(self,contents=None):
 		self.storeDir = os.environ['HOME'] + '/.local/share/gusic'
-		self.configFile = open(self.storeDir + '/config.json','r+')
-		if self.configFile.read() == "":
-			self.configFile.write('{}')
-		self.jsonConfig = json.loads(self.configFile.read())
+		self.configFile = self.storeDir + '/config.json'
+		self.jsonConfig = []
+		self.default = json.dumps(contents)
+		self._load(self.configFile)
+	def _createFile(self,filePath):
+		if not self.default:
+			self.default = "{}"
+		fdw = open(filePath,'w+')
+		fdw.write(self.default)
+		fdw.close()
+	def _load(self,filePath):
+		try:
+			fdr = open(filePath,'r')
+			if fdr.read() == "":
+				fdr.close()
+				self._createFile()
+				fdr = open(filePath,'r')
+		except:
+			self._createFile(filePath)
+			fdr = open(filePath,'r')
+		print fdr.read()
+		fdr.seek(0)
+		self.jsonConfig = json.loads(fdr.read())
+		fdr.close()
 	def set(self,var,val):
 		self.jsonConfig[var] = val;
-		self.save()
+		self._save()
 	def get(self,var):
-		return self.jsonConfig[var]
+		if isinstance(self.jsonConfig[var],dict):
+			print "got dict"
+			return ConfigProxy(self,var,self.jsonConfig[var])
+		else:
+			return self.jsonConfig[var]
 	def delete(self,var):
 		del self.jsonConfig[var]
 		self.save()
-	def save(self):
-		self.configFile.write(json.dumps(self.jsonConfig))
-	def __getattr__(self,var):
+	def _save(self):
+		fd = open(self.configFile,'w')
+		fd.write(json.dumps(self.jsonConfig))
+		fd.close()
+	def __getitem__(self,var):
 		return self.get(var)
-	def __setattr__(self,var,val):
+	def __setitem__(self,var,val):
 		return self.set(var,val)
-	def __delattr__(self,var):
+	def __delitem__(self,var):
 		return self.delete(var)
+	def __iter__(self):
+		return self.jsonConfig.__iter__()
 	def __str__(self):
 		return json.dumps(self.jsonConfig)
+
+class ConfigProxy(object):
+	def __init__(self,ConfigObj,name,var):
+		self.configObj = ConfigObj
+		self.jsonSubConfig = var
+		self.name = name
+	def __getitem__(self,var):
+		return self.jsonSubConfig.get(var)
+	def __setitem__(self,var,val):
+		self.jsonSubConfig[var] = val
+		return self.configObj.set(self.name,self.jsonSubConfig)
+	def __delitem__(self,var):
+		del(self.jsonSubConfig[var])
+		return self.configObj.set(self.name,self.jsonSubConfig)
+	def __str__(self):
+		return json.dumps(self.jsonSubConfig)
+	def __iter__(self):
+		return self.jsonSubConfig.__iter__()

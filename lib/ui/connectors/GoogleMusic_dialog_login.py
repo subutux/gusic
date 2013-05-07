@@ -18,6 +18,10 @@ from gi.repository import Gtk
 from lib.core.signals import Signals
 import time
 import threading
+import os
+from lib.core.config import Config
+config = Config()
+
 class Signals(Signals):
 	def on_button_exit_clicked(self,widget):
 		self.destroy(None)
@@ -30,6 +34,10 @@ class Signals(Signals):
 		img_ok_user = self.mSelf.loginBuilder.get_object("image_username_ok")
 		img_ok_pass = self.mSelf.loginBuilder.get_object("image_password_ok")
 		spinner_login = self.mSelf.loginBuilder.get_object("spinner_login")
+		if config['login']['save_login_username']:
+			print "saving to [login]save_login_username_content: %s" % entry_username.get_text()
+			config['login']['save_login_username_content'] = entry_username.get_text()
+
 		doLogin = threading.Thread(target=self.mSelf.api.login,args=(entry_username.get_text(),entry_password.get_text()))
 		label_status.set_text("Logging in ...")
 		spinner_login.set_visible(True)

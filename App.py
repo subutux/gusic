@@ -19,10 +19,45 @@
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
+from ConfigParser import SafeConfigParser
+import os
+import shutil
+# change to current directory
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+## CONFIG loader ##
+from lib.core.config import Config
+config =  Config({
+		'login': {
+			'save_login': False,
+			'save_login_username': True,
+			'save_login_username_content': ''
+		},
+		'notifications': {
+			'use_notifications': True,
+			'on_background_only': False,
+			'timeout': 5,
+			'timeout_max': 60,
+			'timeout_min': 1
+		},
+		'tasks': {
+			'library_updater' : False,
+			'library_updater_interval': 30,
+			'library_updater_interval_max': 60,
+			'library_updater_interval_min': 10
+		},
+		'locations': {
+			'basedir': '~/.local/share/gusic',
+			'logfile': 'gusic.log',
+			'cachefile': 'gusic.cache.sql',
+			'cachedir': 'cache'
+		} 
+	})
+if "~" in config['locations']['basedir']:
+	config['locations']['basedir'] = os.path.expanduser(config['locations']['basedir'])
+
+## CONFIG loader ##
 import gobject
 gobject.threads_init()
-import os
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from lib._version import __version__
 from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
@@ -44,8 +79,7 @@ import gst
 import time
 from random import randrange
 from gmusicapi.utils import utils
-
-logfile = os.environ['HOME'] + '/.local/share/gusic/gusic.log'
+logfile = config['locations']['basedir'] + '/' + config['locations']['logfile']
 logging.basicConfig(filename=logfile,level=logging.DEBUG,format='%(asctime)s [%(levelname)s]:{%(filename)s[%(lineno)d]%(funcName)s}:%(message)s')
 log = logging.getLogger('gusic')
 class Gusic(object):
@@ -117,6 +151,10 @@ class Gusic(object):
 			self.loginDialog = self.loginBuilder.get_object('window_login')
 			self.loginDialog.set_wmclass ("Gusic", "Gusic")
 			self.loginDialog.set_title('Gusic')
+			if config['login']['save_login_username']:
+				username_input = self.loginBuilder.get_object('entry_google_account_user')
+				username_input.set_text(config['login']['save_login_username_content'])
+
 			self.image_logo = self.loginBuilder.get_object('image_logo')
 			self.image_logo.set_from_file('imgs/Gusic_logo-256.png')
 			self.loginDialog.show_all()
