@@ -35,7 +35,6 @@ class Signals(Signals):
 		img_ok_pass = self.mSelf.loginBuilder.get_object("image_password_ok")
 		spinner_login = self.mSelf.loginBuilder.get_object("spinner_login")
 		if config['login']['save_login_username']:
-			print "saving to [login]save_login_username_content: %s" % entry_username.get_text()
 			config['login']['save_login_username_content'] = entry_username.get_text()
 
 		doLogin = threading.Thread(target=self.mSelf.api.login,args=(entry_username.get_text(),entry_password.get_text()))
@@ -65,7 +64,9 @@ class Signals(Signals):
 					Gtk.main_iteration()
 			spinner_login.set_visible(False)
 			self.mSelf.loggedIn = True
-			#self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
+			if config['login']['save_login']:
+				self.mSelf.keyring.saveLoginDetails(entry_username.get_text(),entry_password.get_text())
+
 			self.mSelf.startGusic(True)
 		else:
 			label_status.set_text("Unable to login.")

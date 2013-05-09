@@ -40,7 +40,6 @@ class Config(object):
 		except:
 			self._createFile(filePath)
 			fdr = open(filePath,'r')
-		print fdr.read()
 		fdr.seek(0)
 		self.jsonConfig = json.loads(fdr.read())
 		fdr.close()
@@ -49,7 +48,6 @@ class Config(object):
 		self._save()
 	def get(self,var):
 		if isinstance(self.jsonConfig[var],dict):
-			print "got dict"
 			return ConfigProxy(self,var,self.jsonConfig[var])
 		else:
 			return self.jsonConfig[var]

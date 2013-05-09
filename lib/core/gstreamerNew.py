@@ -107,7 +107,6 @@ class GStreamer(object):
         self.player.seek_simple(time,gst.SeekFlags.FLUSH,value)
     def on_message(self,bus,message):
 
-        print dir(message)
         _type = message.type
         if _type == gst.Message.new_eos:
             self.player.set_state(gst.State.NULL)
@@ -117,4 +116,4 @@ class GStreamer(object):
             self.nowplaying = None
             self.status = self.NULL
             err, debug = message.parse_error()
-            print 'GST-Error: %s' % err, debug
+            log.error('GST-Error: %s:%s' % (err, debug))

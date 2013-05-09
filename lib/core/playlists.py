@@ -52,5 +52,4 @@ class Playlists(object):
 			return False
 	def getPlaylist(self,Plid):
 		if self.playlistExists(Plid):
-			print self.playlist_collection
 			return self.playlist_collection[Plid]

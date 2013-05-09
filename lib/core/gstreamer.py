@@ -109,4 +109,4 @@ class GStreamer(object):
             self.nowplaying = None
             self.status = self.NULL
             err, debug = message.parse_error()
-            print 'GST-Error: %s' % err, debug
+            log.error('GST-Error: %s:%s' % (err, debug))

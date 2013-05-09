@@ -77,6 +77,7 @@ import threading
 import logging
 import gst
 import time
+import urllib2.HTTPError
 from random import randrange
 from gmusicapi.utils import utils
 logfile = config['locations']['basedir'] + '/' + config['locations']['logfile']
@@ -343,16 +344,12 @@ class Gusic(object):
 			self.load_playlist_into_main_view(self.treeview_media_view)
 	def get_song_from_id(self,songId,playIt):
 		item = self.liststore_all_songs.get_iter_first()
-		while (item != None):
-			
+		while (item != None):		
 			if self.liststore_all_songs.get_value(item,5) == songId:
-
-				print item
 				tree_selection = self.treeview_main_song_view.get_selection()
 				tree_selection.select_iter(item)
 				(model,pathlist) = tree_selection.get_selected_rows()
 				self.treeview_main_song_view.scroll_to_cell(pathlist[0])
-
 				if playIt:
 					self._playIter(model,item)
 				return item
