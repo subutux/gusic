@@ -19,6 +19,7 @@ import urllib2
 import logging
 import sqlite3
 from gi.repository import Gtk
+from lib.core.config import Config
 log = logging.getLogger('gusic')
 class DB(object):
 	def __init__(self,dbfile):
@@ -127,10 +128,11 @@ class SqlListStore(Gtk.ListStore):
 
 class Cache(object):
 	def __init__(self):
-		self.cacheLocation = os.environ['HOME'] + '/.local/share/gusic/cache'
+		config = Config()
+		self.cacheLocation = config['locations']['basedir'] + '/' + config['locations']['cachedir'] + '/' + config['tmp']['username']
 		self.cacheImages = self.cacheLocation + '/images'
 		self.cacheDatabase = self.cacheLocation + '/gusic.cache.db'
-
+		log.debug("CacheLocation = %s" % self.cacheLocation)
 		if not os.path.isdir(self.cacheLocation):
 			os.makedirs(self.cacheLocation)
 		if not os.path.isdir(self.cacheImages):

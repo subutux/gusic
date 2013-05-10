@@ -19,7 +19,6 @@
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
-from ConfigParser import SafeConfigParser
 import os
 import shutil
 # change to current directory
@@ -50,11 +49,11 @@ config =  Config({
 			'logfile': 'gusic.log',
 			'cachefile': 'gusic.cache.sql',
 			'cachedir': 'cache'
-		} 
+		},
 	})
 if "~" in config['locations']['basedir']:
 	config['locations']['basedir'] = os.path.expanduser(config['locations']['basedir'])
-
+config['tmp'] = {'username' : ''}
 ## CONFIG loader ##
 import gobject
 gobject.threads_init()
@@ -63,6 +62,7 @@ from lib.ui import GoogleMusic_main
 from lib.ui import GoogleMusic_dialog_login
 from lib.ui import GoogleMusic_about
 from lib.ui import GoogleMusic_log
+from lib.ui import GoogleMusic_settings
 from lib.KeyRing import keyring
 from lib.core.gstreamer import GStreamer
 from lib.core.bus import Bus
@@ -77,7 +77,7 @@ import threading
 import logging
 import gst
 import time
-import urllib2.HTTPError
+import urllib2
 from random import randrange
 from gmusicapi.utils import utils
 logfile = config['locations']['basedir'] + '/' + config['locations']['logfile']
@@ -125,11 +125,14 @@ class Gusic(object):
 		self.Bus.registerEvent("on-song-ended")
 		log.debug('connecting self._playNext to bus event "on-song-ended"')
 		self.Bus.connect("on-song-ended",self._playNext)
-		self.Cache = Cache()
 		self.treeview_media_view = self.mainBuilder.get_object('treeview_media_view')
 		self.treeview_media_view.set_cursor(0)
 		self.liststore_media = self.mainBuilder.get_object('liststore_media')
 		self.treestore_media = self.mainBuilder.get_object('treestore_media')
+
+		self.settingsBuilder = GoogleMusic_settings.Build(self,None)
+		self.settingsBuilder.get_object('window1').connect('delete-event', lambda w, e: w.hide() or True)
+		
 		## THEMING ##
 		#self.mainBuilder.get_object('treeview_main_song_view').set_name('treeview_main_song_view')
 		#self.mainBuilder.get_object('viewport1').set_name('display')
@@ -161,6 +164,8 @@ class Gusic(object):
 			self.loginDialog.show_all()
 
 	def startGusic(self,fromLogin=False):
+		# Cache depends on the username, so setting the cache class later
+		self.Cache = Cache()
 		self.main.show_all()
 		if fromLogin:
 			self.loginDialog.hide()

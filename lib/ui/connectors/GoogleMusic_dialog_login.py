@@ -48,6 +48,7 @@ class Signals(Signals):
 				Gtk.main_iteration()
 		time.sleep(0.1)
 		if self.mSelf.api.is_authenticated():
+			config['tmp']['username'] = entry_username.get_text()
 			img_ok_user.set_visible(True)
 			img_ok_pass.set_visible(True)
 			label_status.set_text("Downloading music information ...")

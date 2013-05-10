@@ -48,7 +48,8 @@ class Signals(Signals):
 		return True
 	def on_menuitem_show_log_activate(self,widget):
 		self.dialogAbout = self.mSelf.logBuilder.get_object('window_log').show_all()
-
+	def on_menuitem_media_settings_activate(self,widget):
+		self.settingsDialog = self.mSelf.settingsBuilder.get_object('window1').show_all()
 	def on_button_next_clicked(self,widget):
 		self.mSelf._playNext()
 		return True
