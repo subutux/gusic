@@ -35,7 +35,7 @@ So, What does it do?
 
 It loads your Google Music library and makes it browsable & playable. It has the basic functionality of a media player.
 
-Why does'nt [thing] work?
+Why doesn't [thing] work?
 -------------------------
 
 Because this is actually a playground for me & there is no strict development flow in this project. It's a "Do I want to code and do I have the time" - development flow.
