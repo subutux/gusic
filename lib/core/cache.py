@@ -173,3 +173,82 @@ class Cache(object):
 			return True
 		else:
 			return False
+	def getLibraryCache(self):
+
+class LibraryCache(object):
+	"""A Class for handling the library cache.
+
+	It caches the raw JSON into gusic.db.json file in the default cache location
+	and loads it when needed.
+
+	"""
+	def __init__(self,fetchLibraryFunction):
+		self.fetchLib = fetchLibraryFunction
+		self.cacheLocation = config['locations']['basedir'] + '/' + config['locations']['cachedir'] + '/' + config['tmp']['username']
+		self.cachefile = self.cacheLocation + '/gusic.db.json'
+
+	def backgroundSync(self):
+		"""Function to sync the local library.
+
+		This function is meant to run into a thread. It fetches the library via the self.fetchLib function,
+		converts it to json, generates an md5 hash and compares it with the md5 hash of the current library.
+		if those aren't equal, replace (or iterate over the current library) the current library with the new
+		one and initiate a listStore resync.
+		"""
+		#TODO: How do I initiate a listStore resync, without breaking the treeView connection? Find the 
+		#      differences and replace?
+
+	def getLibrary(self):
+		""" get the cached library """
+		if os.path.isfile(self.cachefile):
+			return json.loads(open(self.cachefile,'r').read())
+		else:
+			return False
+			""" library not cached """
+	def forceCache(self):
+		""" Force a resync of the remote library, a clean dump """
+		lib = self.fetchLib()
+		if lib not None:
+			jsonRaw = json.dumps(lib)
+			open(self.cachefile,'w').write(jsonRaw)
+		else:
+			return False
+	def find(self):
+		lib = self.getLibrary()
+		return searchDict(lib)
+
+class searchDict(object):
+	""" a simple dictsearch class
+
+	using a simple "where" clause
+	returns a instance of a searchDict with the results
+	"""
+	def __init__(self,dictionary):
+		self.dict = dictionary
+	def where(self,var,compare,value):
+		comparitors = ['equals' ,'not equals', 'greater', 'lower']
+		result = []
+		if compare not in comparitors:
+			return False
+		else
+		if compare == "equals":
+			for i in self.dict:
+				if i[var] == val:
+					result.append(i)
+		elif compare == "not equals":
+			for i in self.dict:
+				if i[var] != val:
+					result.append(i)
+		elif compare == "greater":
+			for i in self.dict:
+				if i[var] > val:
+					result.append(i)
+		elif compare == "lower":
+			for i in self.dict:
+				if i[var] < val:
+					result.append(i)
+		return searchDict(result)
+	def __iter__(self):
+		return self.dict.__iter__()
+	def __getitem__(self,var):
+		return self.dict[var]
