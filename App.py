@@ -53,7 +53,7 @@ config =  Config({
 	})
 if "~" in config['locations']['basedir']:
 	config['locations']['basedir'] = os.path.expanduser(config['locations']['basedir'])
-config['tmp'] = {'username' : ''}
+config['tmp'] = {'username' : '', 'resync_library_on_startup': False}
 ## CONFIG loader ##
 import gobject
 gobject.threads_init()
